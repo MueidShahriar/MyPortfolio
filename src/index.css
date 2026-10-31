@@ -185,7 +185,7 @@ body { margin: 0; min-width: 320px; overflow-x: hidden; font-family: Inter, ui-s
 .page-heading { position: relative; display: flex; min-height: 13rem; align-items: center; }
 .page-heading-copy { position: relative; z-index: 1; width: 100%; padding-right: clamp(0rem,19vw,16rem); }
 .page-heading-art { position: absolute; top: 50%; right: .5rem; width: clamp(12rem,22vw,17rem); aspect-ratio: 1; color: #c4b5fd; opacity: .9; pointer-events: none; transform: translateY(-50%); filter: drop-shadow(0 14px 30px rgba(91,33,182,.25)); }
-.page-heading-art::before { position: absolute; z-index: 0; inset: 7%; border: 1px solid color-mix(in srgb,currentColor 38%,transparent); border-radius: 38% 62% 53% 47% / 47% 43% 57% 53%; content: ""; box-shadow: 0 0 0 1.15rem color-mix(in srgb,currentColor 4%,transparent),0 0 3.5rem color-mix(in srgb,currentColor 18%,transparent),inset 0 0 2.5rem color-mix(in srgb,currentColor 10%,transparent); animation: art-orbit 18s ease-in-out infinite alternate; }
+.page-heading-art::before { position: absolute; z-index: 0; inset: 7%; border: 1px solid color-mix(in srgb,currentColor 38%,transparent); border-radius: 38% 62% 53% 47% / 47% 43% 57% 53%; content: ""; box-shadow: 0 0 0 1.15rem color-mix(in srgb,currentColor 4%,transparent),0 0 3.5rem color-mix(in srgb,currentColor 18%,transparent),inset 0 0 2.5rem color-mix(in srgb,currentColor 10%,transparent); animation: art-glow 4.8s ease-in-out infinite alternate; }
 .page-heading-art::after { position: absolute; z-index: 0; inset: -5%; border: 1px dashed color-mix(in srgb,currentColor 24%,transparent); border-radius: 50%; content: ""; opacity: .58; transform: rotate(-18deg) scaleY(.82); }
 .page-heading-art > svg { position: relative; z-index: 1; width: 100%; height: 100%; overflow: visible; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .page-heading-art .art-panel { fill: rgba(91,33,182,.09); stroke: currentColor; }
@@ -195,7 +195,7 @@ body { margin: 0; min-width: 320px; overflow-x: hidden; font-family: Inter, ui-s
 .page-heading-art .art-node { fill: #ede9fe; stroke: rgba(139,92,246,.55); filter: drop-shadow(0 0 6px #8b5cf6); }
 .page-heading-art .art-route { fill: none; stroke: #ddd6fe; stroke-width: 2.5; stroke-dasharray: 7 8; animation: route-flow 8s linear infinite; }
 @keyframes route-flow { to { stroke-dashoffset: -120; } }
-@keyframes art-orbit { to { border-radius: 60% 40% 42% 58% / 43% 60% 40% 57%; transform: rotate(12deg) scale(.96); } }
+@keyframes art-glow { to { opacity: .68; box-shadow: 0 0 0 1.35rem color-mix(in srgb,currentColor 6%,transparent),0 0 4.2rem color-mix(in srgb,currentColor 24%,transparent),inset 0 0 2.8rem color-mix(in srgb,currentColor 13%,transparent); } }
 .page-heading-art-01 { color: #c4b5fd; }
 .page-heading-art-02 { color: #a78bfa; }
 .page-heading-art-03 { color: #ddd6fe; }
@@ -542,3 +542,83 @@ kbd { border: 1px solid rgba(255,255,255,.13); border-radius: .35rem; padding: .
 @keyframes stat-pulse { to { opacity: .45; transform: scale(.8); } }
 @media (max-width: 767px) { .visitor-stats-wrap { padding-right: max(.85rem,env(safe-area-inset-right)); padding-left: max(.85rem,env(safe-area-inset-left)); padding-bottom: 1.1rem; } .visitor-stats-heading { min-height: 0; align-items: flex-start; flex-direction: column; gap: .55rem; padding: .75rem 0; } .visitor-stats-meta { width: 100%; justify-content: space-between; gap: .35rem; font-size: .59rem; } .visitor-stats-summary { min-height: 4.4rem; } .visitor-stat-card { gap: .5rem; padding: .68rem .6rem; } .visitor-stat-icon { width: 1.9rem; height: 1.9rem; border-radius: .58rem; } .visitor-stat-icon svg { width: 15px; height: 15px; } .visitor-stat-label { font-size: .47rem; letter-spacing: .1em; } .visitor-stat-card strong { font-size: 1.18rem; } }
 @media (max-width: 390px) { .visitor-stats-meta { font-size: .53rem; } .visitor-stats-meta strong { font-size: .78rem; } .visitor-stat-card { gap: .38rem; padding-right: .35rem; padding-left: .35rem; } .visitor-stat-icon { width: 1.65rem; height: 1.65rem; } .visitor-stat-icon svg { width: 13px; height: 13px; } .visitor-stat-label { font-size: .42rem; letter-spacing: .075em; } .visitor-stat-card strong { font-size: 1.05rem; } }
+
+/* A shorter, denser visitor bar that keeps all live counters easy to scan. */
+.visitor-stats-wrap { margin-top: -1.5rem; padding-bottom: .75rem; }
+.visitor-stats-panel { border-radius: .9rem; padding-right: clamp(.7rem,1.7vw,1.25rem); padding-left: clamp(.7rem,1.7vw,1.25rem); }
+.visitor-stats-panel::before { top: -6rem; width: 11rem; opacity: .72; }
+.visitor-stats-heading { min-height: 2.55rem; }
+.visitor-stats-heading h2 { gap: .45rem; font-size: .62rem; }
+.visitor-stats-heading h2 > i { height: .78rem; }
+.visitor-stats-meta { gap: clamp(.5rem,1.3vw,1.15rem); font-size: .61rem; }
+.visitor-stats-meta strong { font-size: .8rem; }
+.visitor-stats-summary { min-height: 3.6rem; }
+.visitor-stat-card { gap: .55rem; padding: .5rem clamp(.35rem,1.2vw,.95rem); }
+.visitor-stat-icon { width: 1.8rem; height: 1.8rem; border-radius: .58rem; }
+.visitor-stat-icon svg { width: 15px; height: 15px; }
+.visitor-stat-card > div { gap: .08rem; }
+.visitor-stat-label { font-size: .47rem; }
+.visitor-stat-card strong { font-size: 1.2rem; }
+
+/* Give every page illustration its own shape language and a stronger glow. */
+.page-heading-art { width: clamp(13rem,23vw,18rem); opacity: .96; filter: drop-shadow(0 18px 34px color-mix(in srgb,currentColor 23%,transparent)); }
+.page-heading-art::before { background: radial-gradient(ellipse at 50% 43%,color-mix(in srgb,currentColor 11%,transparent),transparent 68%); }
+.page-heading-art::after { border-style: dotted; opacity: .48; }
+.page-heading-art > svg { filter: drop-shadow(0 0 10px color-mix(in srgb,currentColor 25%,transparent)); }
+.page-heading-art-01::before { border-radius: 48% 48% 24% 24% / 35% 35% 20% 20%; }
+.page-heading-art-01::after { transform: rotate(18deg) scaleX(.77); }
+.page-heading-art-02::before { inset: 12%; border-radius: 1.5rem; transform: rotate(45deg) scale(.82); }
+.page-heading-art-02::after { border-radius: 1rem; transform: rotate(-18deg) scale(.8); }
+.page-heading-art-03::before { inset: 13%; border-radius: 50%; }
+.page-heading-art-03::after { border-style: dashed; transform: rotate(52deg) scaleY(.9); }
+.page-heading-art-04::before { inset: 13% 17%; border-radius: .8rem; transform: rotate(-8deg); }
+.page-heading-art-04::after { border-radius: .75rem; transform: rotate(12deg) scale(.9); }
+.page-heading-art-05::before { inset: 14% 8%; border-radius: 50%; transform: scaleY(.55); }
+.page-heading-art-05::after { border-radius: 50%; transform: rotate(-24deg) scaleY(.72); }
+.page-heading-art-06::before { inset: 18%; border-radius: 50%; }
+.page-heading-art-06::after { inset: 0; border-style: dashed; transform: rotate(45deg) scale(.68); }
+.page-heading-art-07::before { inset: 18% 8% 24%; border-radius: 50% 50% 12% 12%; }
+.page-heading-art-07::after { inset: 4% 0 12%; transform: rotate(0) scaleY(.7); }
+.page-heading-art-08::before { inset: 13% 17%; border-radius: .6rem; transform: rotate(7deg); }
+.page-heading-art-08::after { border-radius: .5rem; transform: rotate(-9deg) scale(.85); }
+
+/* Soft, page-specific geometry adds depth behind the content without reducing contrast. */
+.section-wrap { background-repeat: no-repeat; }
+.page-about #about { background-image: radial-gradient(ellipse 22rem 17rem at 98% 7%,rgba(124,58,237,.095),transparent 72%),radial-gradient(circle at 2% 72%,rgba(91,33,182,.045),transparent 22rem); }
+.page-projects #projects { background-image: radial-gradient(ellipse 19rem 24rem at 100% 5%,rgba(109,40,217,.09),transparent 72%),linear-gradient(135deg,transparent 76%,rgba(196,181,253,.025) 76.2%,transparent 76.5%); }
+.page-creative #creative { background-image: radial-gradient(circle at 100% 6%,rgba(168,85,247,.11),transparent 20rem),radial-gradient(circle at 0% 48%,rgba(91,33,182,.055),transparent 21rem); }
+.page-skills #skills { background-image: radial-gradient(ellipse 24rem 13rem at 92% 8%,rgba(139,92,246,.09),transparent 72%),linear-gradient(90deg,transparent 49.8%,rgba(196,181,253,.018) 50%,transparent 50.2%); }
+.page-experience #experience { background-image: radial-gradient(ellipse 22rem 15rem at 96% 8%,rgba(124,58,237,.09),transparent 72%),repeating-linear-gradient(135deg,transparent 0 4.4rem,rgba(196,181,253,.018) 4.45rem 4.5rem,transparent 4.55rem 8.9rem); }
+.page-leadership #leadership { background-image: radial-gradient(circle at 96% 7%,rgba(139,92,246,.11),transparent 18rem),radial-gradient(circle at 96% 7%,rgba(196,181,253,.11) 1px,transparent 1.5px); background-size: auto,1.4rem 1.4rem; }
+.page-education #education { background-image: radial-gradient(circle at 100% 8%,rgba(124,58,237,.09),transparent 18rem),repeating-radial-gradient(circle at 100% 8%,transparent 0 2.4rem,rgba(196,181,253,.025) 2.45rem 2.5rem,transparent 2.55rem 4.9rem); }
+.page-certificates #certificates { background-image: radial-gradient(ellipse 22rem 17rem at 98% 8%,rgba(109,40,217,.1),transparent 72%),repeating-linear-gradient(45deg,transparent 0 3.8rem,rgba(196,181,253,.018) 3.85rem 3.9rem,transparent 3.95rem 7.6rem); }
+
+@media (max-width: 767px) {
+  .visitor-stats-wrap { margin-top: -1.1rem; padding-bottom: .65rem; }
+  .visitor-stats-heading { min-height: 0; align-items: center; flex-direction: row; gap: .45rem; padding: .52rem 0; }
+  .visitor-stats-heading h2 { flex: 0 0 auto; font-size: .56rem; letter-spacing: .12em; }
+  .visitor-stats-meta { min-width: 0; justify-content: flex-end; gap: .5rem; font-size: .52rem; }
+  .visitor-stats-meta > span:not(.visitor-stats-status) { gap: .2rem; }
+  .visitor-stats-meta strong { font-size: .72rem; }
+  .visitor-stats-status { gap: .25rem; font-size: .46rem; letter-spacing: .08em; }
+  .visitor-stats-status i { width: .34rem; height: .34rem; }
+  .visitor-stats-summary { min-height: 3.1rem; }
+  .visitor-stat-card { gap: .38rem; padding: .42rem .35rem; }
+  .visitor-stat-icon { width: 1.55rem; height: 1.55rem; border-radius: .5rem; }
+  .visitor-stat-icon svg { width: 13px; height: 13px; }
+  .visitor-stat-label { font-size: .42rem; letter-spacing: .075em; }
+  .visitor-stat-card strong { font-size: 1.02rem; }
+  .page-heading-art { width: clamp(7rem,25vw,8.2rem); }
+}
+@media (max-width: 390px) {
+  .visitor-stats-panel { padding-right: .55rem; padding-left: .55rem; }
+  .visitor-stats-heading { gap: .25rem; }
+  .visitor-stats-heading h2 { font-size: .5rem; letter-spacing: .08em; }
+  .visitor-stats-meta { gap: .3rem; font-size: .47rem; }
+  .visitor-stats-meta strong { font-size: .66rem; }
+  .visitor-stats-status { font-size: .41rem; letter-spacing: .04em; }
+  .visitor-stat-card { gap: .28rem; padding-right: .25rem; padding-left: .25rem; }
+  .visitor-stat-icon { width: 1.4rem; height: 1.4rem; }
+  .visitor-stat-label { font-size: .39rem; }
+  .visitor-stat-card strong { font-size: .94rem; }
+}

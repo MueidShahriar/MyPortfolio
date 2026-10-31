@@ -1,51 +1,91 @@
-# MD. Mueid Shahriar — Portfolio
+<div align="center">
+  <img src="./img/mueid.jpeg" width="112" height="112" alt="MD. Mueid Shahriar" style="border-radius: 50%; object-fit: cover;" />
+  <h1>MD. Mueid Shahriar</h1>
+  <p><strong>Software · Interface · Visual design</strong></p>
+  <p>A personal portfolio bringing together the products I build, the visuals I create, and the communities I serve.</p>
 
-A responsive, multi-page portfolio for **MD. Mueid Shahriar**, a computer science student and frontend developer with an interest in visual design. The site brings together selected projects, creative work, technical skills, experience, leadership, education, and contact information in one purple-themed interface.
+  <p>
+    <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React 18" />
+    <img src="https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 6" />
+    <img src="https://img.shields.io/badge/Firebase-Realtime%20Data-FFCA28?style=for-the-badge&logo=firebase&logoColor=111827" alt="Firebase Realtime Database" />
+    <img src="https://img.shields.io/badge/Responsive-Ready-8B5CF6?style=for-the-badge" alt="Responsive design" />
+  </p>
 
-[GitHub profile](https://github.com/MueidShahriar) · [Email](mailto:mueidshahriar_cse1616@std.bauet.ac.bd)
+  <p>
+    <a href="https://github.com/MueidShahriar">GitHub</a> ·
+    <a href="https://www.linkedin.com/in/mueid16">LinkedIn</a> ·
+    <a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd">Email</a>
+  </p>
+</div>
 
-## Features
+---
 
-- Dedicated pages for Home, About, Projects, Creative, Skills, Experience, Leadership, Education, Certificates, and Contact.
-- Responsive layouts for phones, tablets, and desktop screens.
-- Dark purple visual theme, page graphics, animated preloader, and cursor-follow glow on pointer devices.
-- Searchable quick navigation. Press **⌘K** on macOS or **Ctrl+K** on Windows and Linux.
-- Firebase Analytics page-view events in production.
-- Firebase Realtime Database counters for each page, website-wide views, daily views, and current online visitors.
-- Live project previews when a public project URL is available, plus a filterable creative-work gallery.
-- Contact form that opens a prefilled email draft.
+## Explore
+
+<p align="center">
+  <a href="#highlights">Highlights</a> ·
+  <a href="#pages">Pages</a> ·
+  <a href="#run-locally">Run locally</a> ·
+  <a href="#visitor-analytics">Visitor analytics</a> ·
+  <a href="#project-map">Project map</a>
+</p>
+
+## Highlights
+
+- **Ten dedicated pages** for projects, creative work, skills, experience, leadership, education, certificates, and more.
+- **Expressive dark-purple design** with page-specific graphics, glass navigation, responsive layouts, and a 1.2-second animated preloader.
+- **Quick navigation** with search. Press **⌘ K** on macOS or **Ctrl K** on Windows and Linux.
+- **Live visitor panel** powered by Firebase Realtime Database: current-page views, total views, today's views, and active visitors.
+- **Portfolio gallery** with project previews, filters for creative work, and certificate images/PDFs.
+- **Direct contact options** with email, phone, WhatsApp, LinkedIn, and a prefilled email draft.
+
+## Pages
+
+| Page | Route | What you'll find |
+| --- | --- | --- |
+| Home | `/` | Introduction, featured work, and community impact |
+| About | `/about` | Background, interests, and strengths |
+| Projects | `/projects` | Selected software and web projects |
+| Creative | `/creative` | Original graphics and visual work |
+| Skills | `/skills` | Technical and creative toolkit |
+| Experience | `/experience` | Professional experience |
+| Leadership | `/leadership` | Organization roles and service |
+| Education | `/education` | Academic history |
+| Certificates | `/certificates` | Credentials and certificate previews |
+| Contact | `/contact` | Contact details and message form |
 
 ## Tech stack
 
-- React 18, Vite 6, and Tailwind CSS 4
-- Lucide React icons
-- Firebase JavaScript SDK (Analytics, Authentication, and Realtime Database)
+| Area | Tools |
+| --- | --- |
+| Frontend | React 18, Vite 6, Tailwind CSS 4 |
+| Icons | Lucide React |
+| Visitor data | Firebase Realtime Database and Firebase Authentication |
+| Analytics | Firebase Analytics |
 
 ## Run locally
 
-Use a recent Node.js and npm installation.
+Use a recent version of Node.js and npm.
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite in your terminal. Visitor counts include local preview visits so you can confirm the Firebase integration while developing. Opening `index.html` directly, or through Live Server on port 5500, redirects to the Vite home page.
+Open the local address printed by Vite. Visitor counters include local preview traffic. Opening `index.html` directly or through Live Server on port `5500` sends you to the Vite home page.
 
-## Build and preview
+### Create a production build
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Vite writes the generated site to `dist/`. This folder can be recreated by running the build command; edit the source files instead of generated files. When deploying to a static host, configure it to serve `index.html` for the portfolio routes.
+Vite creates the deployable files in `dist/`. The folder is generated by the build command; make changes in the source files. Configure the hosting provider to send portfolio routes back to `index.html`.
 
-## Firebase visitor data
+## Visitor analytics
 
-The portfolio writes its public visitor statistics to the `portfolioStats` node in the Firebase Realtime Database at `https://protfolio-d8443-default-rtdb.firebaseio.com`. The browser uses Firebase's public web configuration; it does not contain a service-account key. Firebase Authentication supplies anonymous visitor identities for the database rules.
-
-The database stores:
+Visitor data is stored in the Firebase Realtime Database for the `protfolio-d8443` project, under `portfolioStats/`. Firebase Authentication gives each browser an anonymous identity for authorized writes.
 
 ```text
 portfolioStats/
@@ -53,51 +93,30 @@ portfolioStats/
 ├── pageViews/{page}
 ├── dailyViews/{YYYY-MM-DD}/total
 ├── dailyViews/{YYYY-MM-DD}/pages/{page}
-└── presence/{anonymousUid}/{tabId} = { page, lastSeen }
+└── presence/{anonymousUid}/{tabId}
 ```
 
-Counts use Realtime Database transactions to avoid overwriting concurrent increments. Daily keys use Bangladesh time. The online count is an estimate of active anonymous browser profiles; a profile is considered online while at least one tab has checked in during the last 90 seconds. A browser tab sends a presence heartbeat every 30 seconds and registers an `onDisconnect` cleanup. No names, emails, or contact details are collected by this tracking feature.
+View counters use database transactions so concurrent visits do not overwrite each other. Daily totals follow Bangladesh time. Online visitors are estimated from browser tabs that have checked in during the last 90 seconds; each active tab refreshes its presence every 30 seconds. This feature does not collect names, email addresses, or contact details.
 
-### Enable anonymous sign-in
+### Firebase setup
 
-1. Open Firebase Console → **Authentication** → **Sign-in method**.
-2. Enable **Anonymous** sign-in for the `protfolio-d8443` project.
-3. Confirm the deployed website's domain is listed under Authentication → **Settings** → **Authorized domains**.
+1. In Firebase Console, open **Authentication → Sign-in method** and enable **Anonymous** sign-in.
+2. Add the production website domain under **Authentication → Settings → Authorized domains**.
+3. Review `database.rules.json`, then publish the rules:
 
-Without Anonymous sign-in, database writes are rejected and the panel shows **UNAVAILABLE**.
+   ```bash
+   npm install -g firebase-tools
+   firebase login
+   firebase deploy --only database
+   ```
 
-### Apply the database rules
+4. Deploy the updated frontend.
 
-The repository includes `database.rules.json`, which allows public reads for the displayed aggregate statistics and restricts writes to authenticated visitors. View counters can only increase by one; presence records can only be written under the signed-in visitor's own anonymous UID and must have a recent timestamp.
+The rules allow reading the displayed statistics and restrict counter writes to authenticated, single-step increments. Avoid public write rules such as `.write: true`. Firebase's browser configuration is public client configuration; never add service-account credentials to the frontend.
 
-To publish these rules with the Firebase CLI:
+Firebase Analytics records `portfolio_page_view` events in production. Find them in **Firebase Console → Analytics → Events**.
 
-```bash
-npm install -g firebase-tools
-firebase login
-firebase deploy --only database
-```
-
-The `.firebaserc` file selects the `protfolio-d8443` Firebase project. Review the rules in Firebase Console → **Realtime Database** → **Rules** after deployment. Do not replace them with public write access such as `.write: true`.
-
-Deploy the updated frontend after enabling Anonymous sign-in and applying the rules. The panel is shared across all portfolio routes and displays current-page views, total website views, today's views, online visitors, and visitors on the current page. Firebase Analytics also records `portfolio_page_view` events in production; find them in Firebase Console → **Analytics → Events**.
-
-## Pages
-
-| Page | Route |
-| --- | --- |
-| Home | `/` |
-| About | `/about` |
-| Projects | `/projects` |
-| Creative | `/creative` |
-| Skills | `/skills` |
-| Experience | `/experience` |
-| Leadership | `/leadership` |
-| Education | `/education` |
-| Certificates | `/certificates` |
-| Contact | `/contact` |
-
-## Project structure
+## Project map
 
 ```text
 .
@@ -121,12 +140,22 @@ Deploy the updated frontend after enabling Anonymous sign-in and applying the ru
 └── vite.config.js
 ```
 
-## Update portfolio content
+## Update content
 
-- **Projects:** edit `src/data/projects.js`.
-- **Skills:** edit `src/data/skills.js`.
-- **Creative work:** edit `src/data/creativeWorks.js`.
-- **Leadership:** edit `src/data/leadership.js`.
-- **Pages and layout:** edit `src/App.jsx`.
-- **Theme and responsive styling:** edit `src/index.css`.
-- **Profile image:** replace `img/mueid.jpeg` and keep the same filename, or update its import in `src/App.jsx`.
+| Content | Source file |
+| --- | --- |
+| Projects | `src/data/projects.js` |
+| Skills | `src/data/skills.js` |
+| Creative gallery | `src/data/creativeWorks.js` |
+| Leadership roles | `src/data/leadership.js` |
+| Certificates | `src/data/certificates.js` |
+| Page layout and navigation | `src/App.jsx` |
+| Theme, graphics, and responsive styling | `src/index.css` |
+| Profile image | `img/mueid.jpeg` |
+
+---
+
+<div align="center">
+  <strong>Designed and built by MD. Mueid Shahriar</strong><br />
+  <sub>Computer Science & Engineering · Software Development · Graphics Design</sub>
+</div>
