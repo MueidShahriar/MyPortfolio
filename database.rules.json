@@ -1,0 +1,45 @@
+{
+  "rules": {
+    "portfolioStats": {
+      ".read": true,
+      "totalViews": {
+        ".write": "auth != null && ((!data.exists() && (newData.val() == 0 || newData.val() == 1)) || (data.isNumber() && newData.val() == data.val() + 1))",
+        ".validate": "newData.isNumber() && newData.val() >= 0"
+      },
+      "pageViews": {
+        "$page": {
+          ".write": "auth != null && $page.matches(/^(home|about|projects|creative|skills|experience|leadership|education|certificates|contact)$/) && ((!data.exists() && (newData.val() == 0 || newData.val() == 1)) || (data.isNumber() && newData.val() == data.val() + 1))",
+          ".validate": "newData.isNumber() && newData.val() >= 0"
+        }
+      },
+      "dailyViews": {
+        "$date": {
+          "total": {
+            ".write": "auth != null && $date.matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) && ((!data.exists() && (newData.val() == 0 || newData.val() == 1)) || (data.isNumber() && newData.val() == data.val() + 1))",
+            ".validate": "newData.isNumber() && newData.val() >= 0"
+          },
+          "pages": {
+            "$page": {
+              ".write": "auth != null && $date.matches(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/) && $page.matches(/^(home|about|projects|creative|skills|experience|leadership|education|certificates|contact)$/) && ((!data.exists() && (newData.val() == 0 || newData.val() == 1)) || (data.isNumber() && newData.val() == data.val() + 1))",
+              ".validate": "newData.isNumber() && newData.val() >= 0"
+            }
+          }
+        }
+      },
+      "presence": {
+        "$uid": {
+          "$tabId": {
+            ".write": "auth != null && auth.uid == $uid && $tabId.matches(/^[A-Za-z0-9_-]{8,80}$/)",
+            ".validate": "newData.hasChildren(['page', 'lastSeen']) && newData.numChildren() == 2 && newData.child('page').isString() && newData.child('lastSeen').isNumber() && newData.child('lastSeen').val() <= now && newData.child('lastSeen').val() >= now - 90000",
+            "page": {
+              ".validate": "newData.isString() && newData.val().matches(/^(home|about|projects|creative|skills|experience|leadership|education|certificates|contact)$/)"
+            },
+            "lastSeen": {
+              ".validate": "newData.isNumber() && newData.val() <= now && newData.val() >= now - 90000"
+            }
+          }
+        }
+      }
+    }
+  }
+}

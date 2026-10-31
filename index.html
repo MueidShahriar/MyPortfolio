@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0712" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <meta name="description" content="MD. Mueid Shahriar is a computer science student and frontend developer building thoughtful web and mobile experiences in Bangladesh." />
+    <meta property="og:title" content="MD. Mueid Shahriar | Frontend Developer" />
+    <meta property="og:description" content="Frontend development, web and mobile applications and visual design by MD. Mueid Shahriar" />
+    <meta property="og:type" content="website" />
+    <title>MD. Mueid Shahriar | Frontend Developer</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
+      const isStaticPreview = isLocalhost && window.location.port === "5500";
+      if (window.location.protocol === "file:" || isStaticPreview) {
+        window.location.replace("http://127.0.0.1:5173/");
+      }
+    </script>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
