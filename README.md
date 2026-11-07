@@ -81,6 +81,46 @@ A responsive web application for hall-related management and information service
 | Analytics | Firebase Analytics |
 | Deployment | Vercel, GitHub Pages, or any SPA-compatible host |
 
+## Architecture
+
+The portfolio uses a multi-page HTML entry structure with one shared React application and one shared stylesheet. Each page entry mounts the same `App` component; the current pathname selects which section is visible.
+
+```mermaid
+flowchart TD
+    Visitor[Visitor] --> Entry[HTML page entry]
+    Entry --> React[React bootstrap: src/main.jsx]
+    React --> App[App.jsx]
+    App --> Router[Path-based page selection]
+    App --> Content[Static content modules]
+    Content --> Projects[projects.js]
+    Content --> Skills[skills.js]
+    Content --> Leadership[leadership.js]
+    Content --> Certificates[certificates.js]
+    App --> Theme[index.css]
+    App --> Firebase[Firebase services]
+    Firebase --> Auth[Anonymous authentication]
+    Firebase --> Database[Realtime Database]
+    Firebase --> Analytics[Analytics events]
+    Public[public assets] --> App
+```
+
+### Request and rendering flow
+
+1. The browser opens one of the entries in `pages/`, such as `pages/projects.html`.
+2. Vite loads the shared `src/main.jsx` bundle.
+3. `App.jsx` reads the current pathname and selects the matching portfolio section.
+4. Content is rendered from the modules in `src/data/`; media is served from `public/`.
+5. Visitor statistics are tracked through anonymous Firebase authentication and Realtime Database subscriptions.
+6. Navigation between sections uses the direct HTML page paths while preserving the shared visual system and interactions.
+
+### Design principles
+
+- **Single source of truth:** portfolio content lives in data modules instead of duplicated page markup.
+- **Shared presentation:** all entries reuse the same React application and CSS bundle.
+- **Progressive enhancement:** certificates, project links, and creative assets remain useful as standard links.
+- **Privacy-aware analytics:** visitor counters use anonymous identities and do not store contact details.
+- **Content-first maintenance:** adding a project or certificate normally requires updating one data file and its assets.
+
 ## Run locally
 
 Use a recent Node.js and npm installation.
@@ -101,7 +141,7 @@ npm run build
 npm run preview
 ```
 
-The production output is generated in `dist/`. Deploy the `dist/` directory and configure the host to serve `index.html` for portfolio routes such as `/projects` and `/certificates`.
+The production output is generated in `dist/`. Each portfolio page has a direct HTML entry under `pages/` (`pages/about.html`, `pages/projects.html`, and so on), while the React application and shared stylesheet are bundled once and reused across pages.
 
 ## Visitor analytics
 
@@ -149,6 +189,16 @@ The browser Firebase configuration is client-side configuration, not a service-a
 │   ├── firebase.js         # Firebase initialization and analytics
 │   ├── index.css           # Theme, layout, animation, and responsive styles
 │   └── main.jsx            # React entry point
+├── pages/
+│   ├── about.html          # About page entry
+│   ├── projects.html       # Projects page entry
+│   ├── creative.html       # Creative page entry
+│   ├── skills.html         # Skills page entry
+│   ├── experience.html     # Experience page entry
+│   ├── leadership.html     # Leadership page entry
+│   ├── education.html      # Education page entry
+│   ├── certificates.html   # Certificates page entry
+│   └── contact.html        # Contact page entry
 ├── database.rules.json
 ├── firebase.json
 ├── index.html

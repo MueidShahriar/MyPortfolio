@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowUpRight, Menu, X, Github, Mail, Phone, MapPin, Linkedin, MessageCircle,
   Code2, Smartphone, Palette, Users, ExternalLink, Activity, Terminal, Layers3, Search, Command,
@@ -10,14 +10,17 @@ import { creativeWorks } from "./data/creativeWorks";
 import { certificates } from "./data/certificates";
 import { additionalService, leadershipOrganizations } from "./data/leadership";
 import profileImage from "../img/mueid.jpeg";
+import { trackPortfolioPage, subscribePortfolioStats } from "./firebase";
 
 const nav = ["Home","About","Projects","Creative","Skills","Experience","Leadership","Education","Certificates","Contact"];
 const sections = nav;
+const certificateCategories = ["All", "AI & Technology", "Development", "Data & Analytics", "Design", "Leadership & Recognition"];
 const skillGroupIcons = [Code2, Layers3, Smartphone, Users, Activity, Palette, Command];
-const routeFor = (label) => label === "Home" ? "/" : `/${label.toLowerCase()}`;
+const routeFor = (label) => label === "Home" ? "/" : `/pages/${label.toLowerCase()}.html`;
 const currentPage = () => {
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
-  return nav.find((label) => routeFor(label) === path)?.toLowerCase() || "home";
+  const pageName = path === "/" ? "home" : path.split("/").pop().replace(/\.html$/, "");
+  return nav.find((label) => label.toLowerCase() === pageName)?.toLowerCase() || "home";
 };
 const focusModes = {
   build: {
@@ -230,16 +233,11 @@ function VisitorStats({ page }) {
     setWriteIssue(null);
     setStats((current) => ({ ...current, pageViews: undefined, currentPageOnline: undefined }));
 
-    import("./firebase")
-      .then(({ trackPortfolioPage, subscribePortfolioStats }) => {
-        if (!active) return;
-        void trackPortfolioPage(page, viewId).catch((error) => {
-          if (!active) return;
-          setWriteIssue(error?.code?.startsWith("auth/") ? "auth-setup" : "write-blocked");
-        });
-        unsubscribe = subscribePortfolioStats(page, setStats, setConnection);
-      })
-      .catch(() => active && setConnection("unavailable"));
+    void trackPortfolioPage(page, viewId).catch((error) => {
+      if (!active) return;
+      setWriteIssue(error?.code?.startsWith("auth/") ? "auth-setup" : "write-blocked");
+    });
+    unsubscribe = subscribePortfolioStats(page, setStats, setConnection);
 
     return () => {
       active = false;
@@ -444,14 +442,16 @@ function App() {
     event.preventDefault();
     navigateTo(path);
   };
-  const categories = ["All", ...new Set(creativeWorks.map(work => work.category))];
-  const filtered = filter === "All" ? creativeWorks : creativeWorks.filter(w => w.category === filter);
-  const certificateCategories = ["All", "AI & Technology", "Development", "Data & Analytics", "Design", "Leadership & Recognition"];
-  const visibleCertificates = certificates.filter((certificate) => {
-    const matchesCategory = certificateFilter === "All" || certificate.category === certificateFilter;
-    const searchText = `${certificate.title} ${certificate.issuer} ${certificate.category} ${certificate.credentialId}`.toLowerCase();
-    return matchesCategory && searchText.includes(certificateQuery.trim().toLowerCase());
-  });
+  const categories = useMemo(() => ["All", ...new Set(creativeWorks.map(work => work.category))], []);
+  const filtered = useMemo(() => filter === "All" ? creativeWorks : creativeWorks.filter(w => w.category === filter), [filter]);
+  const visibleCertificates = useMemo(() => {
+    const query = certificateQuery.trim().toLowerCase();
+    return certificates.filter((certificate) => {
+      const matchesCategory = certificateFilter === "All" || certificate.category === certificateFilter;
+      const searchText = `${certificate.title} ${certificate.issuer} ${certificate.category} ${certificate.credentialId || ""}`.toLowerCase();
+      return matchesCategory && searchText.includes(query);
+    });
+  }, [certificateFilter, certificateQuery]);
   const activeFocus = focusModes[focus];
   const FocusIcon = activeFocus.icon;
 
