@@ -1,91 +1,111 @@
 <div align="center">
-  <img src="./img/mueid.jpeg" width="112" height="112" alt="MD. Mueid Shahriar" style="border-radius: 50%; object-fit: cover;" />
-  <h1>MD. Mueid Shahriar</h1>
-  <p><strong>Software · Interface · Visual design</strong></p>
-  <p>A personal portfolio bringing together the products I build, the visuals I create, and the communities I serve.</p>
+  <img src="./img/mueid.jpeg" width="112" height="112" alt="MD. Mueid Shahriar" />
 
-  <p>
-    <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React 18" />
-    <img src="https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 6" />
-    <img src="https://img.shields.io/badge/Firebase-Realtime%20Data-FFCA28?style=for-the-badge&logo=firebase&logoColor=111827" alt="Firebase Realtime Database" />
-    <img src="https://img.shields.io/badge/Responsive-Ready-8B5CF6?style=for-the-badge" alt="Responsive design" />
-  </p>
+  # MD. Mueid Shahriar
+
+  **Software · Interface · Visual Design**
+
+  A personal portfolio for selected software projects, creative work, leadership experience, and professional credentials.
 
   <p>
     <a href="https://github.com/MueidShahriar">GitHub</a> ·
     <a href="https://www.linkedin.com/in/mueid16">LinkedIn</a> ·
     <a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd">Email</a>
   </p>
+
+  <p>
+    <img src="https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React 18" />
+    <img src="https://img.shields.io/badge/Vite-6-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite 6" />
+    <img src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS 4" />
+    <img src="https://img.shields.io/badge/Firebase-Realtime_Data-FFCA28?style=for-the-badge&logo=firebase&logoColor=111827" alt="Firebase Realtime Database" />
+  </p>
 </div>
 
 ---
 
-## Explore
+## Overview
 
-<p align="center">
-  <a href="#highlights">Highlights</a> ·
-  <a href="#pages">Pages</a> ·
-  <a href="#run-locally">Run locally</a> ·
-  <a href="#visitor-analytics">Visitor analytics</a> ·
-  <a href="#project-map">Project map</a>
-</p>
+This portfolio is designed as a focused digital profile rather than a single landing page. It combines:
 
-## Highlights
+- Product-focused project case studies
+- Technical and creative skill groups
+- Organization-based leadership timelines
+- Creative work and certificate galleries
+- Firebase-powered visitor analytics
+- Direct contact and social links
 
-- **Ten dedicated pages** for projects, creative work, skills, experience, leadership, education, certificates, and more.
-- **Expressive dark-purple design** with page-specific graphics, glass navigation, responsive layouts, and a 1.2-second animated preloader.
-- **Quick navigation** with search. Press **⌘ K** on macOS or **Ctrl K** on Windows and Linux.
-- **Live visitor panel** powered by Firebase Realtime Database: current-page views, total views, today's views, and active visitors.
-- **Portfolio gallery** with project previews, filters for creative work, and certificate images/PDFs.
-- **Direct contact options** with email, phone, WhatsApp, LinkedIn, and a prefilled email draft.
+The interface uses a dark purple visual system, responsive layouts, glass-style navigation, animated page artwork, accessible focus states, and a lightweight client-side route experience.
 
-## Pages
+## Portfolio sections
 
-| Page | Route | What you'll find |
+| Section | Route | Purpose |
 | --- | --- | --- |
-| Home | `/` | Introduction, featured work, and community impact |
-| About | `/about` | Background, interests, and strengths |
-| Projects | `/projects` | Selected software and web projects |
-| Creative | `/creative` | Original graphics and visual work |
-| Skills | `/skills` | Technical and creative toolkit |
-| Experience | `/experience` | Professional experience |
-| Leadership | `/leadership` | Organization roles and service |
-| Education | `/education` | Academic history |
-| Certificates | `/certificates` | Credentials and certificate previews |
+| Home | `/` | Introduction, focus modes, featured work, and impact |
+| About | `/about` | Background, interests, and capabilities |
+| Projects | `/projects` | Selected software and web applications |
+| Creative | `/creative` | Posters, identities, event graphics, and visual work |
+| Skills | `/skills` | Programming, web, mobile, backend, data, and design tools |
+| Experience | `/experience` | Professional experience and responsibilities |
+| Leadership | `/leadership` | Organization roles, timelines, and service |
+| Education | `/education` | Academic background |
+| Certificates | `/certificates` | Credential search, category filters, previews, and PDFs |
 | Contact | `/contact` | Contact details and message form |
 
-## Tech stack
+## Selected work
+
+### BAUET Blood Donation Club
+
+A community technology platform for donor management, authentication, real-time data, analytics, and digital club operations.
+
+**Stack:** HTML5, CSS3, JavaScript, Tailwind CSS, Firebase, Chart.js, Node.js, Express.js, Gemini AI, jsPDF, PWA
+
+- [Live website](https://blood-donation-community.vercel.app)
+- [Source code](https://github.com/MueidShahriar/BAUET-BDC)
+
+### Smart Hall Management System
+
+A responsive web application for hall-related management and information services.
+
+**Stack:** HTML, Tailwind CSS, JavaScript
+
+- [Live website](https://smart-hall-ms.vercel.app)
+- [Source code](https://github.com/MueidShahriar/Smart-Hall-Management-System)
+
+## Technology
 
 | Area | Tools |
 | --- | --- |
 | Frontend | React 18, Vite 6, Tailwind CSS 4 |
-| Icons | Lucide React |
-| Visitor data | Firebase Realtime Database and Firebase Authentication |
+| UI icons | Lucide React |
+| Data and auth | Firebase Realtime Database, Firebase Authentication |
 | Analytics | Firebase Analytics |
+| Deployment | Vercel, GitHub Pages, or any SPA-compatible host |
 
 ## Run locally
 
-Use a recent version of Node.js and npm.
+Use a recent Node.js and npm installation.
 
 ```bash
+git clone <repository-url>
+cd <repository-directory>
 npm install
 npm run dev
 ```
 
-Open the local address printed by Vite. Visitor counters include local preview traffic. Opening `index.html` directly or through Live Server on port `5500` sends you to the Vite home page.
+Open the local URL printed by Vite.
 
-### Create a production build
+### Production preview
 
 ```bash
 npm run build
 npm run preview
 ```
 
-Vite creates the deployable files in `dist/`. The folder is generated by the build command; make changes in the source files. Configure the hosting provider to send portfolio routes back to `index.html`.
+The production output is generated in `dist/`. Deploy the `dist/` directory and configure the host to serve `index.html` for portfolio routes such as `/projects` and `/certificates`.
 
 ## Visitor analytics
 
-Visitor data is stored in the Firebase Realtime Database for the `protfolio-d8443` project, under `portfolioStats/`. Firebase Authentication gives each browser an anonymous identity for authorized writes.
+The site uses Firebase for anonymous visitor statistics. Data is stored under `portfolioStats/`:
 
 ```text
 portfolioStats/
@@ -96,13 +116,13 @@ portfolioStats/
 └── presence/{anonymousUid}/{tabId}
 ```
 
-View counters use database transactions so concurrent visits do not overwrite each other. Daily totals follow Bangladesh time. Online visitors are estimated from browser tabs that have checked in during the last 90 seconds; each active tab refreshes its presence every 30 seconds. This feature does not collect names, email addresses, or contact details.
+Counters use database transactions to avoid overwriting concurrent visits. Daily totals use Bangladesh time, and active visitors are estimated from browser-tab presence refreshed every 30 seconds. The analytics flow does not collect names, email addresses, or contact form details.
 
-### Firebase setup
+### Firebase configuration
 
-1. In Firebase Console, open **Authentication → Sign-in method** and enable **Anonymous** sign-in.
-2. Add the production website domain under **Authentication → Settings → Authorized domains**.
-3. Review `database.rules.json`, then publish the rules:
+1. Enable **Authentication → Sign-in method → Anonymous** in Firebase Console.
+2. Add the production domain under **Authentication → Settings → Authorized domains**.
+3. Review and deploy the database rules:
 
    ```bash
    npm install -g firebase-tools
@@ -110,29 +130,25 @@ View counters use database transactions so concurrent visits do not overwrite ea
    firebase deploy --only database
    ```
 
-4. Deploy the updated frontend.
+4. Build and deploy the frontend.
 
-The rules allow reading the displayed statistics and restrict counter writes to authenticated, single-step increments. Avoid public write rules such as `.write: true`. Firebase's browser configuration is public client configuration; never add service-account credentials to the frontend.
+The browser Firebase configuration is client-side configuration, not a service-account credential. Never place service-account keys in the frontend.
 
-Firebase Analytics records `portfolio_page_view` events in production. Find them in **Firebase Console → Analytics → Events**.
-
-## Project map
+## Project structure
 
 ```text
 .
-├── img/
-│   └── mueid.jpeg
+├── img/                    # Profile image
+├── public/
+│   ├── certificates/       # Certificate PDFs and preview images
+│   ├── designs/            # Creative media
+│   └── logos/              # Organization logos
 ├── src/
-│   ├── data/
-│   │   ├── certificates.js
-│   │   ├── creativeWorks.js
-│   │   ├── leadership.js
-│   │   ├── projects.js
-│   │   └── skills.js
-│   ├── App.jsx
-│   ├── firebase.js
-│   ├── index.css
-│   └── main.jsx
+│   ├── data/               # Portfolio content
+│   ├── App.jsx             # Routes, page sections, and interactions
+│   ├── firebase.js         # Firebase initialization and analytics
+│   ├── index.css           # Theme, layout, animation, and responsive styles
+│   └── main.jsx            # React entry point
 ├── database.rules.json
 ├── firebase.json
 ├── index.html
@@ -140,9 +156,9 @@ Firebase Analytics records `portfolio_page_view` events in production. Find them
 └── vite.config.js
 ```
 
-## Update content
+## Updating content
 
-| Content | Source file |
+| Content | File |
 | --- | --- |
 | Projects | `src/data/projects.js` |
 | Skills | `src/data/skills.js` |
@@ -150,8 +166,10 @@ Firebase Analytics records `portfolio_page_view` events in production. Find them
 | Leadership roles | `src/data/leadership.js` |
 | Certificates | `src/data/certificates.js` |
 | Page layout and navigation | `src/App.jsx` |
-| Theme, graphics, and responsive styling | `src/index.css` |
+| Theme and responsive styling | `src/index.css` |
 | Profile image | `img/mueid.jpeg` |
+
+For a certificate with a local preview, place the PDF and image in `public/certificates/`, then add `pdfUrl` and `preview` paths to `src/data/certificates.js`.
 
 ---
 
