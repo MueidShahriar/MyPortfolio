@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   ArrowUpRight, Menu, X, Github, Mail, Phone, MapPin, Linkedin, MessageCircle,
   Code2, Smartphone, Palette, Users, ExternalLink, Activity, Terminal, Layers3, Search, Command,
-  Award, Bot, Database, Sparkles, Eye, Globe, TrendingUp
+  Award, Bot, Database, Sparkles, Eye, Globe, TrendingUp, Send
 } from "lucide-react";
 import { projects } from "./data/projects";
 import { skillGroups } from "./data/skills";
@@ -88,7 +88,7 @@ function Navbar({ page, onNavigate }) {
   return (
     <header className={`site-header fixed inset-x-0 top-0 z-50 px-3 pt-3 transition-all sm:px-4 sm:pt-4 lg:px-6 lg:pt-5 ${scrolled ? "is-scrolled" : ""}`}>
       <div className="site-nav mx-auto flex max-w-[88rem] items-center justify-between">
-        <a href="/" onClick={(event) => onNavigate(event, "/")} className="site-brand"><span className="site-brand-mark"><Code2 size={17}/></span><span>MUEID <b>SHAHRIAR</b></span></a>
+        <a href="/" onClick={(event) => onNavigate(event, "/")} className="site-brand"><span className="site-brand-mark"><Code2 size={17}/></span><span>MD. MUEID <b>SHAHRIAR</b></span></a>
         <nav aria-label="Main navigation" className="desktop-nav hidden items-center gap-0 xl:flex">
           {nav.map((item) => <a key={item} href={routeFor(item)} onClick={(event) => onNavigate(event, routeFor(item))} aria-current={page === item.toLowerCase() ? "page" : undefined} className={`nav-link ${page === item.toLowerCase() ? "is-active" : ""}`}>{item}</a>)}
         </nav>
@@ -274,6 +274,130 @@ function VisitorStats({ page }) {
   </section>;
 }
 
+function PortfolioChatbot() {
+  const [open, setOpen] = useState(false);
+  const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const replyTimer = useRef(null);
+  const wordTimer = useRef(null);
+  const messagesRef = useRef(null);
+  const pointerGaze = useRef(false);
+  const [messages, setMessages] = useState([
+    { from: "bot", text: "Hi! I’m AI Assistant. Ask me about Mueid’s work or schedule a contact." },
+  ]);
+  const [gaze, setGaze] = useState({ x: 0, y: 0 });
+
+  useEffect(() => () => {
+    window.clearTimeout(replyTimer.current);
+    window.clearInterval(wordTimer.current);
+  }, []);
+
+  useEffect(() => {
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+    const handlePointerMove = (event) => {
+      const bot = document.querySelector(".portfolio-bot-face");
+      if (!bot) return;
+      pointerGaze.current = true;
+      const rect = bot.getBoundingClientRect();
+      setGaze({
+        x: Math.max(-3, Math.min(3, (event.clientX - (rect.left + rect.width / 2)) / 28)),
+        y: Math.max(-3, Math.min(3, (event.clientY - (rect.top + rect.height / 2)) / 28)),
+      });
+    };
+    window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    return () => window.removeEventListener("pointermove", handlePointerMove);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    if (mediaQuery.matches) return;
+    const idleGaze = window.setInterval(() => {
+      if (pointerGaze.current) return;
+      setGaze((current) => ({
+        x: current.x === 0 ? (Math.random() > 0.5 ? 2 : -2) : 0,
+        y: current.y === 0 ? (Math.random() > 0.5 ? 1 : -1) : 0,
+      }));
+    }, 1700);
+    return () => window.clearInterval(idleGaze);
+  }, []);
+
+  useEffect(() => {
+    const messagesElement = messagesRef.current;
+    if (!messagesElement) return;
+    const frame = window.requestAnimationFrame(() => {
+      messagesElement.scrollTop = messagesElement.scrollHeight;
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [messages, isTyping, open]);
+
+  const replyTo = (question) => {
+    const text = question.toLowerCase();
+    if (text.includes("project")) return "Mueid builds practical web and mobile products, including donor coordination and community-focused platforms.";
+    if (text.includes("skill") || text.includes("technology")) return "His toolkit includes JavaScript, React, Firebase, web development, mobile development, UI/UX, and graphics design.";
+    if (text.includes("leadership") || text.includes("club")) return "He currently contributes to BAUET BDC, BARC, Hult Prize, ICT Club, Welfare Club, BPMC, BMIC and IEEE BAUET Student Branch.";
+    if (text.includes("contact") || text.includes("email") || text.includes("schedule") || text.includes("meeting")) {
+      setScheduleOpen(true);
+      return "Sure! Choose a preferred date and time below. I’ll prepare an email request for Mueid.";
+    }
+    return "I can tell you about Mueid’s projects, skills, leadership experience, or how to contact him.";
+  };
+
+  const submit = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const question = input.trim();
+    if (!question || isTyping) return;
+    const reply = replyTo(question);
+    setMessages((current) => [...current, { from: "user", text: question }]);
+    setInput("");
+    setIsTyping(true);
+    replyTimer.current = window.setTimeout(() => {
+      const words = reply.split(" ");
+      let wordIndex = 0;
+      setMessages((current) => [...current, { from: "bot", text: "" }]);
+      wordTimer.current = window.setInterval(() => {
+        wordIndex += 1;
+        setMessages((current) => current.map((message, index) => (
+          index === current.length - 1 ? { ...message, text: words.slice(0, wordIndex).join(" ") } : message
+        )));
+        if (wordIndex >= words.length) {
+          window.clearInterval(wordTimer.current);
+          setIsTyping(false);
+        }
+      }, 75);
+    }, Math.min(1800, Math.max(650, reply.length * 18)));
+  };
+
+  const scheduleContact = (event) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const subject = encodeURIComponent(`Contact schedule request — ${data.get("topic")}`);
+    const body = encodeURIComponent(`Hi Mueid,\n\nI would like to schedule a contact.\n\nName: ${data.get("name")}\nEmail: ${data.get("email")}\nPreferred date: ${data.get("date")}\nPreferred time: ${data.get("time")}\nTopic: ${data.get("topic")}\n\nSent through AI Assistant.`);
+    window.location.href = `mailto:mueidshahriar_cse1616@std.bauet.ac.bd?subject=${subject}&body=${body}`;
+  };
+
+  return <aside className={`portfolio-chatbot ${open ? "is-open" : ""}`}>
+    {open && <div className="portfolio-chat-panel" role="dialog" aria-label="AI Assistant">
+      <div className="portfolio-chat-heading"><div><span className="portfolio-chat-status"/><strong>AI ASSISTANT</strong><small>CONTACT &amp; PORTFOLIO GUIDE</small></div><button type="button" onClick={() => setOpen(false)} aria-label="Close AI Assistant">×</button></div>
+      <div ref={messagesRef} className="portfolio-chat-messages" aria-live="polite">{messages.map((message, index) => <p className={`portfolio-chat-message is-${message.from}`} key={`${message.from}-${index}`}>{message.text}</p>)}{isTyping && !messages.at(-1)?.text && <p className="portfolio-chat-message is-bot portfolio-chat-typing" aria-label="AI Assistant is typing"><i/><i/><i/></p>}</div>
+      {scheduleOpen && <form className="portfolio-schedule-form" onSubmit={scheduleContact}>
+        <strong>Schedule a contact</strong>
+        <input name="name" required placeholder="Your name" aria-label="Your name"/>
+        <input name="email" required type="email" placeholder="Your email" aria-label="Your email"/>
+        <div className="portfolio-schedule-row"><input name="date" required type="date" aria-label="Preferred date"/><input name="time" required type="time" aria-label="Preferred time"/></div>
+        <input name="topic" required placeholder="What would you like to discuss?" aria-label="Discussion topic"/>
+        <button type="submit">Prepare email request <ArrowUpRight size={13}/></button>
+      </form>}
+      <form className="portfolio-chat-form" onSubmit={submit} onClick={(event) => event.stopPropagation()}><input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Ask me anything..." aria-label="Ask the AI assistant" disabled={isTyping}/><button type="submit" aria-label="Send message" disabled={isTyping}><Send size={15}/></button></form>
+    </div>}
+    <button type="button" className="portfolio-bot-launcher" onClick={() => setOpen((value) => !value)} aria-label={open ? "Close AI assistant" : "Open AI assistant"}>
+      <span className="portfolio-bot-face" style={{ "--gaze-x": `${gaze.x}px`, "--gaze-y": `${gaze.y}px` }}><span className="portfolio-bot-antenna"/><span className="portfolio-bot-ear portfolio-bot-ear-left"/><span className="portfolio-bot-ear portfolio-bot-ear-right"/><span className="portfolio-bot-screen"><i/><i/><b/></span></span>
+      <span className="portfolio-bot-label">AI ASSISTANT</span>
+    </button>
+  </aside>;
+}
+
 function App() {
   const [filter, setFilter] = useState("All");
   const [certificateFilter, setCertificateFilter] = useState("All");
@@ -281,18 +405,6 @@ function App() {
   const [focus, setFocus] = useState("build");
   const [page, setPage] = useState(currentPage);
   const [pageLoading, setPageLoading] = useState(true);
-  const [paletteOpen, setPaletteOpen] = useState(false);
-  const closePalette = () => setPaletteOpen(false);
-  useEffect(() => {
-    const onKeyDown = (event) => {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        setPaletteOpen((open) => !open);
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
   useEffect(() => {
     const syncPage = () => { setPageLoading(true); setPage(currentPage()); };
     window.addEventListener("popstate", syncPage);
@@ -354,8 +466,6 @@ function App() {
   return <div className={`site-shell page-${page} min-h-screen bg-[#0b0712] text-zinc-100`}>
     <div className="cursor-light" aria-hidden="true"/>
     <Navbar page={page} onNavigate={handleNavigation}/>
-    <button className="palette-trigger" onClick={() => setPaletteOpen(true)} aria-label="Open quick navigation"><Search size={15}/><span>Quick navigation</span><kbd>⌘ / Ctrl K</kbd></button>
-    <CommandPalette open={paletteOpen} onClose={closePalette} onFocusChange={setFocus} onNavigate={navigateTo}/>
     {pageLoading && <PagePreloader page={page}/>}
     <main>
       <section id="home" className={`relative overflow-hidden pt-32 lg:pt-40 ${page === "home" ? "" : "hidden"}`}>
@@ -478,7 +588,7 @@ function App() {
             const CategoryIcon = certificate.category === "AI & Technology" ? Bot : certificate.category === "Development" ? Code2 : certificate.category === "Design" ? Sparkles : certificate.category === "Leadership & Recognition" ? Award : Database;
             return <article className="certificate-card" key={certificate.credentialId || certificate.title}>
               <div className="certificate-card-top"><span className="certificate-card-icon"><CategoryIcon size={19}/></span><span className="certificate-card-number">{String(index + 1).padStart(2, "0")} / {String(visibleCertificates.length).padStart(2, "0")}</span></div>
-              {certificate.preview && <a className="certificate-preview" href={certificate.pdfUrl || certificate.preview} target="_blank" rel="noreferrer" aria-label={certificate.pdfUrl ? `Open the full ${certificate.title} PDF` : `Open the ${certificate.title} image`}><img src={certificate.preview} alt={`${certificate.title} certificate`} loading="lazy" decoding="async"/><span className="certificate-preview-label">{certificate.pdfUrl ? "PDF PREVIEW" : "CERTIFICATE IMAGE"} <ExternalLink size={12}/></span></a>}
+              {certificate.preview ? <a className="certificate-preview" href={certificate.pdfUrl || certificate.preview} target="_blank" rel="noreferrer" aria-label={certificate.pdfUrl ? `Open the full ${certificate.title} PDF` : `Open the ${certificate.title} image`}><img src={certificate.preview} alt={`${certificate.title} certificate`} loading="lazy" decoding="async"/><span className="certificate-preview-label">{certificate.pdfUrl ? "PDF PREVIEW" : "CERTIFICATE IMAGE"} <ExternalLink size={12}/></span></a> : <a className="certificate-preview certificate-preview-fallback" href={certificate.pdfUrl || certificate.credentialUrl || "#"} target={certificate.pdfUrl || certificate.credentialUrl ? "_blank" : undefined} rel={certificate.pdfUrl || certificate.credentialUrl ? "noreferrer" : undefined} aria-label={certificate.pdfUrl ? `Open the full ${certificate.title} PDF` : certificate.credentialUrl ? `Open the ${certificate.title} credential` : `${certificate.title} credential details`}><CategoryIcon size={34}/><span>{certificate.pdfUrl ? "CERTIFICATE PDF" : certificate.credentialUrl ? "ONLINE CREDENTIAL" : "CREDENTIAL DETAILS"} <ExternalLink size={12}/></span></a>}
               <div className="certificate-card-meta"><span>{certificate.category}</span><span>{certificate.issued}</span></div>
               <h3>{certificate.title}</h3>
               <p className="certificate-issuer">{certificate.issuer}</p>
@@ -526,10 +636,11 @@ function App() {
         <div className="linkedin-experience-list">
           {leadershipOrganizations.map((organization, organizationIndex) => <article className="linkedin-org" key={organization.name} style={{ "--org-accent": organization.accent }}>
             <header className="linkedin-org-header">
-              <div className={`linkedin-org-logo ${organization.logo ? "has-logo" : organization.logoSheet ? "has-sheet-logo" : "has-monogram"}`} aria-hidden="true">
+              <div className={`linkedin-org-logo ${organization.logo ? "has-logo" : organization.logoSheet ? "has-sheet-logo" : "has-monogram"} ${organization.logoClass || ""}`} aria-hidden="true">
                 {organization.logo ? <img src={organization.logo} alt="" loading="lazy"/> : organization.logoSheet ? <img src={organization.logoSheet} alt="" loading="lazy" style={{ "--sheet-width": organization.logoCrop.width, "--sheet-left": organization.logoCrop.left, "--sheet-top": organization.logoCrop.top }}/> : <span>{organization.initials}</span>}
               </div>
               <div className="linkedin-org-summary"><h4>{organization.name}</h4><p>{organization.engagement}</p><p className="linkedin-org-location">{organization.location}</p></div>
+              <span className="linkedin-org-role-count">{organization.roles.length} {organization.roles.length === 1 ? "role" : "roles"}</span>
               <span className="linkedin-org-index">{String(organizationIndex + 1).padStart(2, "0")}</span>
             </header>
             <div className="linkedin-roles">
@@ -542,7 +653,7 @@ function App() {
                   {role.description && <p className="linkedin-role-description">{role.description}</p>}
                   {role.media?.length > 0 && <div className="linkedin-media-grid">{role.media.map((media) => <a className="linkedin-media-card" key={media.image} href={media.image} target="_blank" rel="noreferrer"><div className="linkedin-media-preview"><img src={media.image} alt={media.title} loading="lazy" decoding="async"/><span>{media.label}</span></div><strong>{media.title}</strong></a>)}</div>}
                   {role.featured && (Array.isArray(role.featured) ? role.featured : [role.featured]).map((media) => <div className="linkedin-featured" key={media}><span className="linkedin-featured-art" aria-hidden="true"><Sparkles size={17}/></span><span><small>MEDIA</small><strong>{media}</strong></span></div>)}
-                  {role.skills?.length > 0 && <p className="linkedin-role-skills"><Sparkles size={14} aria-hidden="true"/><span>{role.skills.join(", ")}{role.moreSkills ? ` and +${role.moreSkills} skills` : ""}</span></p>}
+                  {role.skills?.length > 0 && <p className="linkedin-role-skills"><Sparkles size={14} aria-hidden="true"/><span>{role.skills.join(", ")}</span></p>}
                 </div>
                 {roleIndex < organization.roles.length - 1 && <span className="linkedin-role-rail" aria-hidden="true"/>}
               </section>)}
@@ -573,6 +684,7 @@ function App() {
         <form onSubmit={handleContactSubmit} className="space-y-4"><label className="sr-only" htmlFor="contact-name">Name</label><input id="contact-name" name="name" autoComplete="name" required placeholder="Name" className="field"/><label className="sr-only" htmlFor="contact-email">Email</label><input id="contact-email" name="email" autoComplete="email" required type="email" placeholder="Email" className="field"/><label className="sr-only" htmlFor="contact-subject">Subject</label><input id="contact-subject" name="subject" required placeholder="Subject" className="field"/><label className="sr-only" htmlFor="contact-message">Message</label><textarea id="contact-message" name="message" required placeholder="Message" rows="6" className="field resize-none"/><button type="submit" className="inline-flex items-center gap-2 rounded-full bg-violet-800 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition hover:scale-[1.01] hover:bg-violet-700">Open email draft <ArrowUpRight size={16}/></button><p className="text-xs text-zinc-600">Your email app will open with the message ready to send.</p></form>
       </div></div></section>
     </main>
+    {page === "home" && <PortfolioChatbot />}
     <VisitorStats page={page}/>
     <footer className="border-t border-white/10"><div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"><div><div className="font-medium text-zinc-300">MD. MUEID SHAHRIAR</div><div className="mt-1">Computer Science & Engineering · Software Development · Graphics Design</div></div><div>© 2026 MD. Mueid Shahriar. All rights reserved.</div></div></footer>
   </div>
