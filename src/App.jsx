@@ -96,9 +96,9 @@ function Navbar({ page, onNavigate }) {
           {nav.map((item) => <a key={item} href={routeFor(item)} onClick={(event) => onNavigate(event, routeFor(item))} aria-current={page === item.toLowerCase() ? "page" : undefined} className={`nav-link ${page === item.toLowerCase() ? "is-active" : ""}`}>{item}</a>)}
         </nav>
         <div className="nav-actions hidden items-center gap-2 xl:flex">
-          <a href="/contact" onClick={(event) => onNavigate(event, "/contact")} className="nav-connect rounded-full border border-white/15 px-4 py-2 text-xs font-medium transition hover:border-white/30 hover:bg-white/5">Let's Connect <ArrowUpRight size={14}/></a>
+          <a href={routeFor("Contact")} onClick={(event) => onNavigate(event, routeFor("Contact"))} className="nav-connect rounded-full border border-white/15 px-4 py-2 text-xs font-medium transition hover:border-white/30 hover:bg-white/5">Let's Connect <ArrowUpRight size={14}/></a>
         </div>
-        <div className="mobile-header-actions flex items-center gap-2 xl:hidden"><a href="/contact" onClick={(event) => onNavigate(event, "/contact")} className="nav-connect-mobile"><Mail size={14}/> Contact</a><button aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-navigation" className="menu-toggle" onClick={() => setOpen(!open)}>{open ? <X size={17}/> : <Menu size={17}/>}</button></div>
+        <div className="mobile-header-actions flex items-center gap-2 xl:hidden"><a href={routeFor("Contact")} onClick={(event) => onNavigate(event, routeFor("Contact"))} className="nav-connect-mobile"><Mail size={14}/> Contact</a><button aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-navigation" className="menu-toggle" onClick={() => setOpen(!open)}>{open ? <X size={17}/> : <Menu size={17}/>}</button></div>
       </div>
       {open && <nav id="mobile-navigation" aria-label="Mobile navigation" className="mobile-nav grid grid-cols-1 gap-2 sm:grid-cols-2 xl:hidden">
         {nav.map((item) => <a key={item} onClick={(event) => { setOpen(false); onNavigate(event, routeFor(item)); }} href={routeFor(item)} aria-current={page === item.toLowerCase() ? "page" : undefined} className={`mobile-nav-link ${page === item.toLowerCase() ? "is-active" : ""}`}>{item}<ArrowUpRight size={13}/></a>)}
@@ -428,7 +428,7 @@ function App() {
   }, [page]);
   useEffect(() => {
     if (!pageLoading) return;
-    const timeout = window.setTimeout(() => setPageLoading(false), 1200);
+    const timeout = window.setTimeout(() => setPageLoading(false), 520);
     return () => window.clearTimeout(timeout);
   }, [page, pageLoading]);
   const navigateTo = (path) => {
@@ -472,12 +472,13 @@ function App() {
         <div className="hero-grid absolute inset-0 -z-10"/>
         <div className="hero-glow absolute inset-0 -z-10"/>
         <div className="hero-graphic" aria-hidden="true"><svg viewBox="0 0 600 600" fill="none"><path className="hero-chart-grid" d="M70 120h470M70 220h470M70 320h470M70 420h470M170 70v400M270 70v400M370 70v400M470 70v400"/><path className="hero-chart-area" d="M76 407 158 360l72 22 83-115 77 54 87-142 77 34v257H76Z"/><path className="hero-chart-line" d="m76 407 82-47 72 22 83-115 77 54 87-142 77 34"/><path className="hero-chart-bars" d="M117 470V430M207 470v-58M297 470v-78M387 470v-99M477 470V235"/><circle className="hero-chart-point" cx="477" cy="213" r="9"/><circle className="hero-chart-point" cx="313" cy="267" r="6"/><circle className="hero-chart-point" cx="230" cy="382" r="5"/></svg></div>
-        <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-24 lg:grid-cols-[1.1fr_.9fr] lg:gap-14 lg:px-8 lg:pb-32">
-          <div className="order-2 animate-rise lg:order-1">
-            <div className="mb-6 flex items-center gap-3 text-xs font-medium tracking-[0.22em] text-violet-300"><span className="status-dot"/> CSE STUDENT · FRONTEND DEVELOPER</div>
-            <h1 className="max-w-4xl text-5xl font-semibold leading-[.95] tracking-[-.04em] sm:text-7xl lg:text-[6.2rem]">MD. MUEID<br/>SHAHRIAR<span className="text-violet-300">.</span></h1>
-            <p className="mt-8 max-w-2xl text-2xl font-medium leading-tight text-zinc-200">{activeFocus.title}</p>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-zinc-400">{activeFocus.description}</p>
+        <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-20 lg:grid-cols-[1.08fr_.92fr] lg:gap-16 lg:px-8 lg:pb-24">
+          <div className="order-1 min-w-0 animate-rise">
+            <div className="mb-6 flex items-center gap-3 text-xs font-medium tracking-[0.2em] text-violet-300"><span className="status-dot"/> FRONTEND-FOCUSED SOFTWARE DEVELOPER</div>
+            <h1 className="hero-title max-w-4xl text-5xl font-semibold leading-[.96] tracking-[-.05em] sm:text-6xl lg:text-[5.2rem]">{activeFocus.title}</h1>
+            <p className="hero-intro mt-7 max-w-2xl text-base leading-7 text-zinc-400">I’m <strong>MD. Mueid Shahriar</strong> — a CSE student and developer building responsive web products, practical software systems and thoughtful digital experiences.</p>
+            <p className="hero-focus-copy mt-4 max-w-2xl text-sm leading-6 text-zinc-500">{activeFocus.description}</p>
+            <div className="hero-stack" aria-label="Core technology stack"><span>React</span><span>JavaScript</span><span>Firebase</span><span>Node.js</span><span>Tailwind CSS</span></div>
             <div className="focus-switcher mt-8" aria-label="Choose a focus mode">
               <div className="mb-3 flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] text-zinc-500"><Layers3 size={13}/> SELECT A LENS</div>
               <div className="flex flex-wrap gap-2">
@@ -488,18 +489,19 @@ function App() {
               </div>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="/projects" onClick={(event) => handleNavigation(event, "/projects")} className="inline-flex items-center gap-2 rounded-full bg-violet-800 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition hover:scale-[1.02] hover:bg-violet-700">View Projects <ArrowUpRight size={16}/></a>
-              <a href="/contact" onClick={(event) => handleNavigation(event, "/contact")} className="inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-medium transition hover:border-white/30 hover:bg-white/5">Contact Me</a>
+              <a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))} className="hero-primary-action inline-flex items-center gap-2 rounded-full bg-violet-800 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition hover:scale-[1.02] hover:bg-violet-700">Explore selected work <ArrowUpRight size={16}/></a>
+              <a href={routeFor("Contact")} onClick={(event) => handleNavigation(event, routeFor("Contact"))} className="hero-secondary-action inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-medium transition hover:border-white/30 hover:bg-white/5">Start a conversation</a>
             </div>
             <div className="mt-9 flex gap-4">
-              <a href="https://github.com/MueidShahriar" target="_blank" rel="noreferrer" aria-label="GitHub profile" className="rounded-full border border-white/10 p-2.5 text-zinc-400 transition hover:border-white/25 hover:text-white"><Github size={17}/></a>
-              <a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd" aria-label="Send email" className="rounded-full border border-white/10 p-2.5 text-zinc-400 transition hover:border-white/25 hover:text-white"><Mail size={17}/></a>
+              <a href="https://github.com/MueidShahriar" target="_blank" rel="noreferrer" aria-label="GitHub profile" className="hero-social-link"><Github size={17}/><span>GitHub</span></a>
+              <a href="https://www.linkedin.com/in/mueid16" target="_blank" rel="noreferrer" aria-label="LinkedIn profile" className="hero-social-link"><Linkedin size={17}/><span>LinkedIn</span></a>
+              <a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd" aria-label="Send email" className="hero-social-link"><Mail size={17}/><span>Email</span></a>
             </div>
           </div>
-          <div className="order-1 animate-float lg:order-2">
+          <div className="order-2 min-w-0 animate-float">
             <div className="hero-panel rounded-3xl border border-white/10 bg-white/[0.025] p-4 shadow-2xl">
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0f12]">
-                <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="ml-4 text-[10px] text-zinc-600">mueid.config.js</span><span className="ml-auto text-[10px] text-emerald-300">● LIVE</span></div>
+                <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="ml-4 text-[10px] text-zinc-600">developer.profile</span><span className="ml-auto text-[10px] text-emerald-300">● AVAILABLE</span></div>
                 <div className="hero-photo"><img src={profileImage} alt="MD. Mueid Shahriar" className="aspect-[4/5] w-full object-cover object-top"/><div className="hero-mini-chart" aria-hidden="true"><span>WEB · MOBILE · VISUAL</span><svg viewBox="0 0 110 32" fill="none"><path d="M2 25 22 19 37 22 54 9 68 16 85 5 108 10"/><circle cx="85" cy="5" r="2.5"/></svg></div></div>
                 <div className="grid grid-cols-3 gap-2 border-t border-white/10 p-4"><div className="rounded-lg bg-white/[0.035] p-3"><Code2 size={15}/><span className="mt-2 block text-[10px] text-zinc-500">CODE</span></div><div className="rounded-lg bg-white/[0.035] p-3"><Smartphone size={15}/><span className="mt-2 block text-[10px] text-zinc-500">MOBILE</span></div><div className="rounded-lg bg-white/[0.035] p-3"><Palette size={15}/><span className="mt-2 block text-[10px] text-zinc-500">DESIGN</span></div></div>
               </div>
@@ -509,25 +511,44 @@ function App() {
         </div>
       </section>
 
+      <section className={`credibility-strip ${page === "home" ? "" : "hidden"}`} aria-label="Professional highlights">
+        <div><strong>{String(projects.length).padStart(2, "0")}</strong><span>Selected projects</span></div>
+        <div><strong>200+</strong><span>Community donations</span></div>
+        <div><strong>{certificates.length}+</strong><span>Verified credentials</span></div>
+        <div><strong>03</strong><span>Product disciplines</span></div>
+      </section>
+
       <section className={`home-overview ${page === "home" ? "" : "hidden"}`} aria-labelledby="home-overview-title">
         <div className="home-overview-heading">
-          <div><p className="home-kicker">A QUICK LOOK</p><h2 id="home-overview-title">A little about the work I do.</h2></div>
-          <a href="/about" onClick={(event) => handleNavigation(event, "/about")} className="home-about-link">More about me <ArrowUpRight size={15}/></a>
+          <div><p className="home-kicker">SELECTED WORK</p><h2 id="home-overview-title">Built to solve real problems.</h2></div>
+          <a href={routeFor("About")} onClick={(event) => handleNavigation(event, routeFor("About"))} className="home-about-link">More about me <ArrowUpRight size={15}/></a>
         </div>
         <div className="home-overview-grid">
-          <a href="/projects" onClick={(event) => handleNavigation(event, "/projects")} className="home-featured-card">
+          <a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))} className="home-featured-card">
             <div className="home-featured-art" aria-hidden="true"><svg viewBox="0 0 280 240" fill="none"><path className="featured-drop" d="M142 25c-17 28-61 79-61 119a61 61 0 1 0 122 0c0-40-44-91-61-119Z"/><path className="featured-pulse" d="M98 146h31l13-30 20 55 17-34h26"/><path className="featured-highlight" d="M111 137c0-18 13-41 25-57"/></svg></div>
             <div className="home-featured-content"><span className="home-kicker">FEATURED PROJECT · LIVE</span><h3>{projects[0].title}</h3><p>{projects[0].description}</p><div className="home-featured-footer"><span>Explore the project and live website</span><ArrowUpRight size={16}/></div></div>
           </a>
           <div className="home-side-cards">
-            <a href="/leadership" onClick={(event) => handleNavigation(event, "/leadership")} className="home-impact-card"><svg className="home-impact-wave" viewBox="0 0 190 130" fill="none" aria-hidden="true"><path d="M8 68h29l15-29 18 59 22-42 17 27h20l13-19 14 4 19-30"/><path d="M15 108h160"/><circle cx="52" cy="39" r="4"/><circle cx="92" cy="56" r="4"/><circle cx="143" cy="64" r="4"/></svg><div><span className="home-kicker">COMMUNITY IMPACT</span><strong>200<span>+</span></strong><p>Blood donations completed through BAUET Blood Donation Club.</p></div><Activity className="home-impact-icon" size={44}/><ArrowUpRight className="home-card-arrow" size={17}/></a>
-            <a href="/skills" onClick={(event) => handleNavigation(event, "/skills")} className="home-skills-card"><span className="home-skills-icon"><Layers3 size={18}/></span><div><span className="home-kicker">MY TOOLKIT</span><h3>Web · Mobile · Visual design</h3><p>See the technologies and tools I use.</p></div><ArrowUpRight className="home-card-arrow" size={17}/></a>
+            <a href={routeFor("Leadership")} onClick={(event) => handleNavigation(event, routeFor("Leadership"))} className="home-impact-card"><svg className="home-impact-wave" viewBox="0 0 190 130" fill="none" aria-hidden="true"><path d="M8 68h29l15-29 18 59 22-42 17 27h20l13-19 14 4 19-30"/><path d="M15 108h160"/><circle cx="52" cy="39" r="4"/><circle cx="92" cy="56" r="4"/><circle cx="143" cy="64" r="4"/></svg><div><span className="home-kicker">COMMUNITY IMPACT</span><strong>200<span>+</span></strong><p>Blood donations completed through BAUET Blood Donation Club.</p></div><Activity className="home-impact-icon" size={44}/><ArrowUpRight className="home-card-arrow" size={17}/></a>
+            <a href={routeFor("Skills")} onClick={(event) => handleNavigation(event, routeFor("Skills"))} className="home-skills-card"><span className="home-skills-icon"><Layers3 size={18}/></span><div><span className="home-kicker">TECHNICAL TOOLKIT</span><h3>React · Firebase · Node.js</h3><p>Frontend engineering backed by practical product delivery.</p></div><ArrowUpRight className="home-card-arrow" size={17}/></a>
           </div>
         </div>
       </section>
 
+      <section className={`home-expertise ${page === "home" ? "" : "hidden"}`} aria-labelledby="home-expertise-title">
+        <div className="home-expertise-heading">
+          <div><p className="home-kicker">WHAT I BRING</p><h2 id="home-expertise-title">From interface to implementation.</h2></div>
+          <p>I combine engineering discipline, product thinking and visual craft to build experiences that are useful, maintainable and clear.</p>
+        </div>
+        <div className="home-expertise-grid">
+          <article><span className="expertise-index">01</span><span className="expertise-icon"><Code2 size={19}/></span><h3>Frontend Engineering</h3><p>Responsive, accessible interfaces built with React, JavaScript and modern CSS workflows.</p><span className="expertise-stack">React · Tailwind CSS · Vite</span></article>
+          <article><span className="expertise-index">02</span><span className="expertise-icon"><Database size={19}/></span><h3>Product Development</h3><p>Practical applications with authentication, real-time data, APIs and reliable user flows.</p><span className="expertise-stack">Firebase · Node.js · REST</span></article>
+          <article><span className="expertise-index">03</span><span className="expertise-icon"><Palette size={19}/></span><h3>Design Collaboration</h3><p>Visual systems and interaction details that make digital products feel coherent and intentional.</p><span className="expertise-stack">UI/UX · Prototyping · Visual design</span></article>
+        </div>
+      </section>
+
       <section id="about" className={`section-wrap ${page === "about" || page === "home" ? "" : "hidden"}`}>
-        <SectionHeading number="01" title="ABOUT"><h2 className="section-title">A developer with a creative perspective.</h2></SectionHeading>
+        <SectionHeading number="01" title="ABOUT"><h2 className="section-title">Engineering with a product mindset.</h2></SectionHeading>
         <div className="grid gap-12 lg:grid-cols-[1.1fr_.9fr]">
           <div className="space-y-5 text-base leading-7 text-zinc-400"><p>I am an undergraduate Computer Science and Engineering student at Bangladesh Army University of Engineering & Technology (BAUET), currently in my 8th semester.</p><p>My technical interests include web development, mobile application development, Java, JavaScript, Firebase and modern web technologies. I have developed practical projects that combine frontend interfaces, backend services, databases, authentication and application functionality.</p><p>Beyond development, I work in graphics design and creative content creation. This combination of technical and visual skills allows me to approach digital products from both an engineering and design perspective.</p><p>I have also taken active leadership roles across several university organizations, gaining practical experience in teamwork, communication, event coordination, project management and organizational leadership.</p></div>
           <div className="grid grid-cols-2 gap-3">{[[Code2,"Software Development"],[Smartphone,"Web & Mobile Development"],[Palette,"Graphics Design"],[Users,"Leadership"]].map(([I,t])=><div key={t} className="about-capability-card rounded-2xl border border-white/10 bg-white/[0.025] p-5 transition hover:-translate-y-1 hover:bg-white/[0.04]"><span className="about-capability-icon"><I size={18}/></span><h3 className="mt-8 text-sm font-medium">{t}</h3><span className="about-capability-line" aria-hidden="true"/></div>)}</div>
@@ -536,7 +557,7 @@ function App() {
       </section>
 
       <section id="projects" className={`section-wrap ${page === "projects" ? "" : "hidden"}`}>
-        <SectionHeading number="02" title="SELECTED WORK"><h2 className="section-title">Projects built with purpose.</h2></SectionHeading>
+        <SectionHeading number="02" title="SELECTED WORK"><h2 className="section-title">Products, systems, and real outcomes.</h2><p className="mt-5 max-w-2xl text-sm leading-6 text-zinc-400">A selection of web and mobile work spanning community technology, management systems and digital commerce.</p></SectionHeading>
         <div className="space-y-8">
           {projects.map((p) => <article id={`project-${p.number}`} key={p.number} className="project-card overflow-hidden rounded-3xl border border-white/10 bg-white/[0.02]">
             <div className="project-layout grid lg:grid-cols-[.82fr_1.18fr]">
@@ -627,7 +648,7 @@ function App() {
           </div>
         </SectionHeading>
         <div className="leadership-overview">
-          <div className="leadership-overview-copy"><span className="home-kicker">COMMUNITY IMPACT · BAUET BDC</span><p>More than <strong>200 donations</strong> completed through coordinated donor and community service.</p><a href="/projects" onClick={(event) => handleNavigation(event, "/projects")}>Explore the donor platform <ArrowUpRight size={14}/></a></div>
+          <div className="leadership-overview-copy"><span className="home-kicker">COMMUNITY IMPACT · BAUET BDC</span><p>More than <strong>200 donations</strong> completed through coordinated donor and community service.</p><a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))}>Explore the donor platform <ArrowUpRight size={14}/></a></div>
           <div className="leadership-overview-art" aria-hidden="true"><svg viewBox="0 0 340 130" fill="none"><path d="M4 102h55l28-52 30 64 40-80 36 58 38-24 36 34h68"/><path d="M6 119h328M45 86v33M88 50v69M157 34v85M229 58v61M267 92v27"/><circle cx="87" cy="50" r="5"/><circle cx="157" cy="34" r="6"/><circle cx="231" cy="58" r="5"/><circle cx="267" cy="92" r="4"/><path d="M157 43c-11-10-25 6 0 25 25-19 11-35 0-25Z"/></svg></div>
           <div className="leadership-overview-stats"><span><strong>09</strong> organizations</span><span><strong>16</strong> roles</span><span><strong>200+</strong> donations</span></div>
         </div>
@@ -686,7 +707,7 @@ function App() {
     </main>
     {page === "home" && <PortfolioChatbot />}
     <VisitorStats page={page}/>
-    <footer className="border-t border-white/10"><div className="mx-auto flex max-w-7xl flex-col gap-5 px-5 py-8 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between lg:px-8"><div><div className="font-medium text-zinc-300">MD. MUEID SHAHRIAR</div><div className="mt-1">Computer Science & Engineering · Software Development · Graphics Design</div></div><div>© 2026 MD. Mueid Shahriar. All rights reserved.</div></div></footer>
+    <footer className="site-footer"><div className="site-footer-inner"><div><div className="site-footer-brand">MD. MUEID SHAHRIAR<span>.</span></div><p>Frontend-focused software developer creating useful, polished digital products.</p></div><nav aria-label="Footer navigation"><a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))}>Projects</a><a href={routeFor("About")} onClick={(event) => handleNavigation(event, routeFor("About"))}>About</a><a href="https://github.com/MueidShahriar" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/mueid16" target="_blank" rel="noreferrer">LinkedIn</a></nav><div className="site-footer-meta"><span>Available for internships &amp; collaborations</span><span>© 2026 MD. Mueid Shahriar</span></div></div></footer>
   </div>
 }
 export default App;
