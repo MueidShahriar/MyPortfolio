@@ -13,13 +13,6 @@
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      const isLocalhost = ["localhost", "127.0.0.1"].includes(window.location.hostname);
-      const isStaticPreview = isLocalhost && window.location.port === "5500";
-      if (window.location.protocol === "file:" || isStaticPreview) {
-        window.location.replace("http://127.0.0.1:5173/");
-      }
-    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

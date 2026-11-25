@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  ArrowUpRight, Menu, X, Github, Mail, Phone, MapPin, Linkedin, MessageCircle,
-  Code2, Smartphone, Palette, Users, ExternalLink, Activity, Terminal, Layers3, Search, Command,
-  Award, Bot, Database, Sparkles, Eye, Globe, TrendingUp, Send
+  ArrowUp, ArrowUpRight, Menu, X, Github, Mail, Phone, MapPin, Linkedin, MessageCircle,
+  Code2, Smartphone, Palette, Users, ExternalLink, Activity, Layers3, Search, Command,
+  Award, Bot, Database, Sparkles, Eye, Globe, TrendingUp, Send, CheckCircle2
 } from "lucide-react";
 import { projects } from "./data/projects";
 import { skillGroups } from "./data/skills";
@@ -10,9 +10,9 @@ import { creativeWorks } from "./data/creativeWorks";
 import { certificates } from "./data/certificates";
 import { additionalService, leadershipOrganizations } from "./data/leadership";
 import profileImage from "../img/mueid.jpeg";
-import { trackPortfolioPage, subscribePortfolioStats } from "./firebase";
 
 const nav = ["Home","About","Projects","Creative","Skills","Experience","Leadership","Education","Certificates","Contact"];
+const desktopNav = nav.filter((item) => item !== "Contact");
 const sections = nav;
 const certificateCategories = ["All", "AI & Technology", "Development", "Data & Analytics", "Design", "Leadership & Recognition"];
 const skillGroupIcons = [Code2, Layers3, Smartphone, Users, Activity, Palette, Command];
@@ -91,12 +91,12 @@ function Navbar({ page, onNavigate }) {
   return (
     <header className={`site-header fixed inset-x-0 top-0 z-50 px-3 pt-3 transition-all sm:px-4 sm:pt-4 lg:px-6 lg:pt-5 ${scrolled ? "is-scrolled" : ""}`}>
       <div className="site-nav mx-auto flex max-w-[88rem] items-center justify-between">
-        <a href="/" onClick={(event) => onNavigate(event, "/")} className="site-brand"><span className="site-brand-mark"><Code2 size={17}/></span><span>MD. MUEID <b>SHAHRIAR</b></span></a>
+        <a href="/" onClick={(event) => onNavigate(event, "/")} className="site-brand"><span className="site-brand-mark"><Code2 size={17}/></span><span className="site-brand-copy"><strong>MD. Mueid Shahriar</strong><small>Software Developer</small></span></a>
         <nav aria-label="Main navigation" className="desktop-nav hidden items-center gap-0 xl:flex">
-          {nav.map((item) => <a key={item} href={routeFor(item)} onClick={(event) => onNavigate(event, routeFor(item))} aria-current={page === item.toLowerCase() ? "page" : undefined} className={`nav-link ${page === item.toLowerCase() ? "is-active" : ""}`}>{item}</a>)}
+          {desktopNav.map((item) => <a key={item} href={routeFor(item)} onClick={(event) => onNavigate(event, routeFor(item))} aria-current={page === item.toLowerCase() ? "page" : undefined} className={`nav-link ${page === item.toLowerCase() ? "is-active" : ""}`}>{item}</a>)}
         </nav>
         <div className="nav-actions hidden items-center gap-2 xl:flex">
-          <a href={routeFor("Contact")} onClick={(event) => onNavigate(event, routeFor("Contact"))} className="nav-connect rounded-full border border-white/15 px-4 py-2 text-xs font-medium transition hover:border-white/30 hover:bg-white/5">Let's Connect <ArrowUpRight size={14}/></a>
+          <a href={routeFor("Contact")} onClick={(event) => onNavigate(event, routeFor("Contact"))} className="nav-connect rounded-full border border-white/15 px-4 py-2 text-xs font-medium transition hover:border-white/30 hover:bg-white/5"><Mail size={14}/> Let's talk</a>
         </div>
         <div className="mobile-header-actions flex items-center gap-2 xl:hidden"><a href={routeFor("Contact")} onClick={(event) => onNavigate(event, routeFor("Contact"))} className="nav-connect-mobile"><Mail size={14}/> Contact</a><button aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} aria-controls="mobile-navigation" className="menu-toggle" onClick={() => setOpen(!open)}>{open ? <X size={17}/> : <Menu size={17}/>}</button></div>
       </div>
@@ -233,11 +233,16 @@ function VisitorStats({ page }) {
     setWriteIssue(null);
     setStats((current) => ({ ...current, pageViews: undefined, currentPageOnline: undefined }));
 
-    void trackPortfolioPage(page, viewId).catch((error) => {
+    void import("./firebase").then(({ trackPortfolioPage, subscribePortfolioStats }) => {
       if (!active) return;
-      setWriteIssue(error?.code?.startsWith("auth/") ? "auth-setup" : "write-blocked");
+      void trackPortfolioPage(page, viewId).catch((error) => {
+        if (!active) return;
+        setWriteIssue(error?.code?.startsWith("auth/") ? "auth-setup" : "write-blocked");
+      });
+      unsubscribe = subscribePortfolioStats(page, setStats, setConnection);
+    }).catch(() => {
+      if (active) setConnection("unavailable");
     });
-    unsubscribe = subscribePortfolioStats(page, setStats, setConnection);
 
     return () => {
       active = false;
@@ -270,6 +275,27 @@ function VisitorStats({ page }) {
       </div>
     </div>
   </section>;
+}
+
+function BackToTop({ page }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const updateVisibility = () => setVisible(window.scrollY > 320);
+    updateVisibility();
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    return () => window.removeEventListener("scroll", updateVisibility);
+  }, [page]);
+
+  if (!visible) return null;
+
+  return <button
+    type="button"
+    className="back-to-top"
+    aria-label="Back to top"
+    title="Back to top"
+    onClick={() => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })}
+  ><ArrowUp size={21} strokeWidth={1.9} aria-hidden="true"/></button>;
 }
 
 function PortfolioChatbot() {
@@ -400,11 +426,9 @@ function App() {
   const [filter, setFilter] = useState("All");
   const [certificateFilter, setCertificateFilter] = useState("All");
   const [certificateQuery, setCertificateQuery] = useState("");
-  const [focus, setFocus] = useState("build");
   const [page, setPage] = useState(currentPage);
-  const [pageLoading, setPageLoading] = useState(true);
   useEffect(() => {
-    const syncPage = () => { setPageLoading(true); setPage(currentPage()); };
+    const syncPage = () => setPage(currentPage());
     window.addEventListener("popstate", syncPage);
     return () => window.removeEventListener("popstate", syncPage);
   }, []);
@@ -426,13 +450,7 @@ function App() {
     document.title = `${title} | MD. Mueid Shahriar`;
     window.scrollTo({ top: 0, behavior: "auto" });
   }, [page]);
-  useEffect(() => {
-    if (!pageLoading) return;
-    const timeout = window.setTimeout(() => setPageLoading(false), 520);
-    return () => window.clearTimeout(timeout);
-  }, [page, pageLoading]);
   const navigateTo = (path) => {
-    setPageLoading(true);
     if (window.location.pathname !== path) window.history.pushState({}, "", path);
     setPage(currentPage());
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -452,9 +470,6 @@ function App() {
       return matchesCategory && searchText.includes(query);
     });
   }, [certificateFilter, certificateQuery]);
-  const activeFocus = focusModes[focus];
-  const FocusIcon = activeFocus.icon;
-
   const handleContactSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -466,31 +481,22 @@ function App() {
   return <div className={`site-shell page-${page} min-h-screen bg-[#0b0712] text-zinc-100`}>
     <div className="cursor-light" aria-hidden="true"/>
     <Navbar page={page} onNavigate={handleNavigation}/>
-    {pageLoading && <PagePreloader page={page}/>}
     <main>
-      <section id="home" className={`relative overflow-hidden pt-32 lg:pt-40 ${page === "home" ? "" : "hidden"}`}>
+      {page === "home" && <>
+      <section id="home" className="relative overflow-hidden">
         <div className="hero-grid absolute inset-0 -z-10"/>
         <div className="hero-glow absolute inset-0 -z-10"/>
         <div className="hero-graphic" aria-hidden="true"><svg viewBox="0 0 600 600" fill="none"><path className="hero-chart-grid" d="M70 120h470M70 220h470M70 320h470M70 420h470M170 70v400M270 70v400M370 70v400M470 70v400"/><path className="hero-chart-area" d="M76 407 158 360l72 22 83-115 77 54 87-142 77 34v257H76Z"/><path className="hero-chart-line" d="m76 407 82-47 72 22 83-115 77 54 87-142 77 34"/><path className="hero-chart-bars" d="M117 470V430M207 470v-58M297 470v-78M387 470v-99M477 470V235"/><circle className="hero-chart-point" cx="477" cy="213" r="9"/><circle className="hero-chart-point" cx="313" cy="267" r="6"/><circle className="hero-chart-point" cx="230" cy="382" r="5"/></svg></div>
         <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-10 px-5 pb-20 lg:grid-cols-[1.08fr_.92fr] lg:gap-16 lg:px-8 lg:pb-24">
           <div className="order-1 min-w-0 animate-rise">
-            <div className="mb-6 flex items-center gap-3 text-xs font-medium tracking-[0.2em] text-violet-300"><span className="status-dot"/> FRONTEND-FOCUSED SOFTWARE DEVELOPER</div>
-            <h1 className="hero-title max-w-4xl text-5xl font-semibold leading-[.96] tracking-[-.05em] sm:text-6xl lg:text-[5.2rem]">{activeFocus.title}</h1>
-            <p className="hero-intro mt-7 max-w-2xl text-base leading-7 text-zinc-400">I’m <strong>MD. Mueid Shahriar</strong> — a CSE student and developer building responsive web products, practical software systems and thoughtful digital experiences.</p>
-            <p className="hero-focus-copy mt-4 max-w-2xl text-sm leading-6 text-zinc-500">{activeFocus.description}</p>
+            <div className="hero-availability mb-7"><span><i/> Available for internships &amp; collaborations</span><span>Bangladesh · Remote friendly</span></div>
+            <p className="hero-eyebrow">FRONTEND DEVELOPER · PRODUCT-MINDED BUILDER</p>
+            <h1 className="hero-title max-w-4xl text-5xl font-semibold leading-[.96] tracking-[-.05em] sm:text-6xl lg:text-[5.2rem]">I build digital products that feel <span>clear, useful, and human.</span></h1>
+            <p className="hero-intro mt-7 max-w-2xl text-base leading-7 text-zinc-400">I’m <strong>MD. Mueid Shahriar</strong>, a frontend-focused software developer and CSE student. I turn real-world problems into responsive web products, reliable systems, and thoughtful user experiences.</p>
             <div className="hero-stack" aria-label="Core technology stack"><span>React</span><span>JavaScript</span><span>Firebase</span><span>Node.js</span><span>Tailwind CSS</span></div>
-            <div className="focus-switcher mt-8" aria-label="Choose a focus mode">
-              <div className="mb-3 flex items-center gap-2 text-[10px] font-medium tracking-[0.2em] text-zinc-500"><Layers3 size={13}/> SELECT A LENS</div>
-              <div className="flex flex-wrap gap-2">
-                {Object.entries(focusModes).map(([key, mode]) => {
-                  const ModeIcon = mode.icon;
-                  return <button key={key} onClick={() => setFocus(key)} className={`focus-pill ${focus === key ? "is-active" : ""}`} aria-pressed={focus === key}><ModeIcon size={14}/>{mode.label}</button>;
-                })}
-              </div>
-            </div>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))} className="hero-primary-action inline-flex items-center gap-2 rounded-full bg-violet-800 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition hover:scale-[1.02] hover:bg-violet-700">Explore selected work <ArrowUpRight size={16}/></a>
-              <a href={routeFor("Contact")} onClick={(event) => handleNavigation(event, routeFor("Contact"))} className="hero-secondary-action inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-medium transition hover:border-white/30 hover:bg-white/5">Start a conversation</a>
+              <a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))} className="hero-primary-action inline-flex items-center gap-2 rounded-full bg-violet-800 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-950/40 transition hover:scale-[1.02] hover:bg-violet-700"><Code2 size={16}/> View selected work</a>
+              <a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd" className="hero-secondary-action inline-flex items-center gap-2 rounded-full border border-white/15 px-5 py-3 text-sm font-medium transition hover:border-white/30 hover:bg-white/5"><Mail size={16}/> Email me</a>
             </div>
             <div className="mt-9 flex gap-4">
               <a href="https://github.com/MueidShahriar" target="_blank" rel="noreferrer" aria-label="GitHub profile" className="hero-social-link"><Github size={17}/><span>GitHub</span></a>
@@ -499,33 +505,39 @@ function App() {
             </div>
           </div>
           <div className="order-2 min-w-0 animate-float">
-            <div className="hero-panel rounded-3xl border border-white/10 bg-white/[0.025] p-4 shadow-2xl">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d0f12]">
-                <div className="flex items-center gap-2 border-b border-white/10 px-4 py-3"><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="h-2.5 w-2.5 rounded-full bg-white/15"/><span className="ml-4 text-[10px] text-zinc-600">developer.profile</span><span className="ml-auto text-[10px] text-emerald-300">● AVAILABLE</span></div>
-                <div className="hero-photo"><img src={profileImage} alt="MD. Mueid Shahriar" className="aspect-[4/5] w-full object-cover object-top"/><div className="hero-mini-chart" aria-hidden="true"><span>WEB · MOBILE · VISUAL</span><svg viewBox="0 0 110 32" fill="none"><path d="M2 25 22 19 37 22 54 9 68 16 85 5 108 10"/><circle cx="85" cy="5" r="2.5"/></svg></div></div>
-                <div className="grid grid-cols-3 gap-2 border-t border-white/10 p-4"><div className="rounded-lg bg-white/[0.035] p-3"><Code2 size={15}/><span className="mt-2 block text-[10px] text-zinc-500">CODE</span></div><div className="rounded-lg bg-white/[0.035] p-3"><Smartphone size={15}/><span className="mt-2 block text-[10px] text-zinc-500">MOBILE</span></div><div className="rounded-lg bg-white/[0.035] p-3"><Palette size={15}/><span className="mt-2 block text-[10px] text-zinc-500">DESIGN</span></div></div>
-              </div>
-              <div className="mt-3 flex items-center gap-3 px-2 text-xs text-zinc-500"><FocusIcon size={14} className="text-violet-300"/><span>{activeFocus.metric}</span><span className="ml-auto"><Terminal size={14}/></span></div>
+            <div className="hero-panel professional-profile-card rounded-3xl border border-white/10 bg-white/[0.025] p-4 shadow-2xl">
+              <div className="profile-card-top"><div><span>MD. MUEID SHAHRIAR</span><p>Software Developer</p></div><span className="profile-card-availability"><i/> OPEN TO WORK</span></div>
+              <div className="hero-photo professional-photo"><img src={profileImage} alt="MD. Mueid Shahriar" className="aspect-[4/5] w-full object-cover object-top"/><div className="profile-photo-caption"><span>BASED IN</span><strong>Bangladesh</strong></div></div>
+              <div className="profile-specialisms" aria-label="Professional specialisms"><span><Code2 size={15}/> Frontend</span><span><Database size={15}/> Products</span><span><Palette size={15}/> UI/UX</span></div>
+              <div className="profile-card-note"><CheckCircle2 size={16}/><span>Building accessible interfaces and practical software for real users.</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      <section className={`credibility-strip ${page === "home" ? "" : "hidden"}`} aria-label="Professional highlights">
+      <section className="credibility-strip" aria-label="Professional highlights">
         <div><strong>{String(projects.length).padStart(2, "0")}</strong><span>Selected projects</span></div>
         <div><strong>200+</strong><span>Community donations</span></div>
         <div><strong>{certificates.length}+</strong><span>Verified credentials</span></div>
         <div><strong>03</strong><span>Product disciplines</span></div>
       </section>
 
-      <section className={`home-overview ${page === "home" ? "" : "hidden"}`} aria-labelledby="home-overview-title">
+      <section className="home-overview" aria-labelledby="home-overview-title">
         <div className="home-overview-heading">
           <div><p className="home-kicker">SELECTED WORK</p><h2 id="home-overview-title">Built to solve real problems.</h2></div>
           <a href={routeFor("About")} onClick={(event) => handleNavigation(event, routeFor("About"))} className="home-about-link">More about me <ArrowUpRight size={15}/></a>
         </div>
         <div className="home-overview-grid">
           <a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))} className="home-featured-card">
-            <div className="home-featured-art" aria-hidden="true"><svg viewBox="0 0 280 240" fill="none"><path className="featured-drop" d="M142 25c-17 28-61 79-61 119a61 61 0 1 0 122 0c0-40-44-91-61-119Z"/><path className="featured-pulse" d="M98 146h31l13-30 20 55 17-34h26"/><path className="featured-highlight" d="M111 137c0-18 13-41 25-57"/></svg></div>
+            <div className="home-featured-preview" aria-hidden="true">
+              <div className="featured-preview-bar"><span><i/><i/><i/></span><small>blood-donation-community.vercel.app</small></div>
+              <div className="featured-preview-body">
+                <div className="featured-preview-nav"><img src="/logos/bauet-bdc.png" alt=""/><span>BAUET BDC</span><i/></div>
+                <div className="featured-preview-heading"><div><small>COMMUNITY DASHBOARD</small><strong>Donor activity</strong></div><span>LIVE</span></div>
+                <div className="featured-preview-stats"><span><strong>200+</strong><small>Donations</small></span><span><strong>24/7</strong><small>Access</small></span><span><strong>Live</strong><small>Firebase data</small></span></div>
+                <div className="featured-preview-chart"><i/><i/><i/><i/><i/><i/><i/></div>
+              </div>
+            </div>
             <div className="home-featured-content"><span className="home-kicker">FEATURED PROJECT · LIVE</span><h3>{projects[0].title}</h3><p>{projects[0].description}</p><div className="home-featured-footer"><span>Explore the project and live website</span><ArrowUpRight size={16}/></div></div>
           </a>
           <div className="home-side-cards">
@@ -535,7 +547,7 @@ function App() {
         </div>
       </section>
 
-      <section className={`home-expertise ${page === "home" ? "" : "hidden"}`} aria-labelledby="home-expertise-title">
+      <section className="home-expertise" aria-labelledby="home-expertise-title">
         <div className="home-expertise-heading">
           <div><p className="home-kicker">WHAT I BRING</p><h2 id="home-expertise-title">From interface to implementation.</h2></div>
           <p>I combine engineering discipline, product thinking and visual craft to build experiences that are useful, maintainable and clear.</p>
@@ -547,7 +559,22 @@ function App() {
         </div>
       </section>
 
-      <section id="about" className={`section-wrap ${page === "about" || page === "home" ? "" : "hidden"}`}>
+      <section className="home-profile" aria-labelledby="home-profile-title">
+        <div className="home-profile-copy">
+          <p className="home-kicker">ABOUT THE DEVELOPER</p>
+          <h2 id="home-profile-title">Engineering foundation. Designer’s eye. Community mindset.</h2>
+          <p>I bring together software development, visual design, and hands-on leadership experience. That mix helps me think beyond the screen—about the people using a product, the system behind it, and the outcome it should create.</p>
+          <a href={routeFor("About")} onClick={(event) => handleNavigation(event, routeFor("About"))} className="home-profile-link">Read my full story</a>
+        </div>
+        <div className="home-process" aria-label="How I approach product work">
+          <article><span>01</span><div><h3>Understand</h3><p>Clarify the user, the problem, and the result before choosing the technology.</p></div></article>
+          <article><span>02</span><div><h3>Build</h3><p>Create responsive interfaces and dependable flows with maintainable code.</p></div></article>
+          <article><span>03</span><div><h3>Refine</h3><p>Test the details, improve usability, and polish the experience across devices.</p></div></article>
+        </div>
+      </section>
+      </>}
+
+      <section id="about" className={`section-wrap ${page === "about" ? "" : "hidden"}`}>
         <SectionHeading number="01" title="ABOUT"><h2 className="section-title">Engineering with a product mindset.</h2></SectionHeading>
         <div className="grid gap-12 lg:grid-cols-[1.1fr_.9fr]">
           <div className="space-y-5 text-base leading-7 text-zinc-400"><p>I am an undergraduate Computer Science and Engineering student at Bangladesh Army University of Engineering & Technology (BAUET), currently in my 8th semester.</p><p>My technical interests include web development, mobile application development, Java, JavaScript, Firebase and modern web technologies. I have developed practical projects that combine frontend interfaces, backend services, databases, authentication and application functionality.</p><p>Beyond development, I work in graphics design and creative content creation. This combination of technical and visual skills allows me to approach digital products from both an engineering and design perspective.</p><p>I have also taken active leadership roles across several university organizations, gaining practical experience in teamwork, communication, event coordination, project management and organizational leadership.</p></div>
@@ -706,8 +733,26 @@ function App() {
       </div></div></section>
     </main>
     {page === "home" && <PortfolioChatbot />}
+    <BackToTop page={page}/>
     <VisitorStats page={page}/>
-    <footer className="site-footer"><div className="site-footer-inner"><div><div className="site-footer-brand">MD. MUEID SHAHRIAR<span>.</span></div><p>Frontend-focused software developer creating useful, polished digital products.</p></div><nav aria-label="Footer navigation"><a href={routeFor("Projects")} onClick={(event) => handleNavigation(event, routeFor("Projects"))}>Projects</a><a href={routeFor("About")} onClick={(event) => handleNavigation(event, routeFor("About"))}>About</a><a href="https://github.com/MueidShahriar" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/mueid16" target="_blank" rel="noreferrer">LinkedIn</a></nav><div className="site-footer-meta"><span>Available for internships &amp; collaborations</span><span>© 2026 MD. Mueid Shahriar</span></div></div></footer>
+    <footer className="site-footer">
+      <div className="site-footer-inner">
+        <div className="site-footer-cta">
+          <div><span className="site-footer-eyebrow">HAVE SOMETHING IN MIND?</span><h2>Let’s build something useful.</h2><p>Open to thoughtful projects, internships, and collaborations.</p></div>
+          <a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd" className="site-footer-email"><Mail size={18} aria-hidden="true"/> Get in touch</a>
+        </div>
+        <div className="site-footer-main">
+          <div className="site-footer-intro">
+            <a href="/" onClick={(event) => handleNavigation(event, "/")} className="site-footer-brand"><span className="site-footer-mark"><Code2 size={19} aria-hidden="true"/></span><span>MD. Mueid Shahriar<small>Software Developer</small></span></a>
+            <p>I build clear interfaces and practical digital products for real people.</p>
+            <span className="site-footer-location"><MapPin size={15} aria-hidden="true"/> Kurigram, Bangladesh</span>
+          </div>
+          <nav className="site-footer-links" aria-label="Explore portfolio"><h3>Explore</h3>{["About", "Projects", "Skills", "Experience", "Creative", "Leadership", "Education", "Certificates"].map((item) => <a key={item} href={routeFor(item)} onClick={(event) => handleNavigation(event, routeFor(item))}>{item}</a>)}</nav>
+          <nav className="site-footer-links site-footer-connect" aria-label="Connect with me"><h3>Connect</h3><a href={routeFor("Contact")} onClick={(event) => handleNavigation(event, routeFor("Contact"))}>Contact page</a><a href="mailto:mueidshahriar_cse1616@std.bauet.ac.bd">Email</a><a href="https://github.com/MueidShahriar" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/mueid16" target="_blank" rel="noreferrer">LinkedIn</a><a href="https://wa.me/8801712460423" target="_blank" rel="noreferrer">WhatsApp</a></nav>
+        </div>
+        <div className="site-footer-bottom"><span>© {new Date().getFullYear()} MD. Mueid Shahriar. All rights reserved.</span><span>Designed &amp; developed by Mueid</span></div>
+      </div>
+    </footer>
   </div>
 }
 export default App;
